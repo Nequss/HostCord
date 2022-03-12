@@ -8,12 +8,34 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\config.png" />
+    <None Remove="Images\exit.png" />
+    <None Remove="Images\extension.png" />
+    <None Remove="Images\home.png" />
+    <None Remove="Images\info.png" />
+    <None Remove="Images\logs.png" />
+    <None Remove="Images\power.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Discord.Net" Version="3.4.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Modules\" />
+    <Folder Include="ViewModel\" />
+    <Folder Include="View\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\config.png" />
+    <Resource Include="Images\exit.png" />
+    <Resource Include="Images\extension.png" />
+    <Resource Include="Images\home.png" />
+    <Resource Include="Images\info.png" />
+    <Resource Include="Images\logs.png" />
+    <Resource Include="Images\power.png" />
   </ItemGroup>
 
 </Project>

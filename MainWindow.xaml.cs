@@ -27,7 +27,7 @@ namespace HostCord
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            new Bot().MainAsync(Token.Text);
+            new Bot().MainAsync("example");
         }
     }
 }

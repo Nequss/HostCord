@@ -5,10 +5,57 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HostCord"
         mc:Ignorable="d"
-        Title="MainWindow" Height="340" Width="500">
-    <StackPanel>
-        <TextBox Name="Token" Text="Paste your token here..." TextAlignment="Center" Height="20" Margin="20,20,20,20"/>
-        <TextBox Name="Logs" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" Height="200" Margin="20,0,20,20"/>
-        <Button Content="Connect" Height="30" Margin="20,0,20,20" Click="Button_Click"/>
-    </StackPanel>
+        Title="HostCord" 
+        Height="720" 
+        Width="1280"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True">
+
+    <Grid Background="#FF36393F">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="15*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="20*"/>
+        </Grid.RowDefinitions>
+
+        <Rectangle Grid.RowSpan="2" Fill="#FF202225"/>
+        <Rectangle Grid.ColumnSpan="2" Fill="#FF202225"/>
+
+        <Label Grid.ColumnSpan="2"
+               Content="HostCord" 
+               VerticalContentAlignment="Center"
+               HorizontalContentAlignment="Center" 
+               Foreground="White"
+               FontFamily="Segoe UI Black"
+               FontSize="20" />
+
+        <StackPanel Orientation="Vertical" Grid.Row="2" >
+            <Button BorderThickness="0" Background="Transparent" Margin="5">
+                <Image Source="Images\power.png"/>
+            </Button>
+            <Button BorderThickness="0" Background="Transparent" Margin="5">
+                <Image Source="Images\home.png"/>
+            </Button>
+
+            <Button BorderThickness="0" Background="Transparent" Margin="5">
+                <Image Source="Images\logs.png"/>
+            </Button>
+            <Button BorderThickness="0" Background="Transparent" Margin="5">
+                <Image Source="Images\extension.png"/>
+            </Button>
+            <Button BorderThickness="0" Background="Transparent" Margin="5">
+                <Image Source="Images\config.png"/>
+            </Button>
+            <Button BorderThickness="0" Background="Transparent" Margin="5">
+                <Image Source="Images\info.png"/>
+            </Button>
+            <Button BorderThickness="0" Background="Transparent" Margin="5,130,5,5">
+                <Image Source="Images\exit.png"/>
+            </Button>
+        </StackPanel>
+    </Grid>
 </Window>

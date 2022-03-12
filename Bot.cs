@@ -16,16 +16,13 @@ namespace HostCord
 {
     internal class Bot
     {
-        public Bot()
-        {
-
-        }
-
         public async Task MainAsync(string token)
         {
             using (var services = ConfigureServices())
             {
                 var client = services.GetRequiredService<DiscordSocketClient>();
+
+                client.Log += Client_Log;
 
                 await client.LoginAsync(TokenType.Bot, token);
                 await client.StartAsync();
@@ -36,16 +33,31 @@ namespace HostCord
             }
         }
 
+        private Task Client_Log(LogMessage arg)
+        {
+            /*
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window.GetType() == typeof(MainWindow))
+                {
+                    (window as MainWindow).Logs.Text += $"{arg}\n";
+                    return Task.CompletedTask;
+                }
+            }
+            */
+            return Task.CompletedTask;
+        }
+
         private ServiceProvider ConfigureServices()
         {
             return new ServiceCollection()
                 .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
                 {
-                    LogLevel = LogSeverity.Critical
+                    LogLevel = LogSeverity.Debug
                 }))
                 .AddSingleton(new CommandService(new CommandServiceConfig
                 {
-                    LogLevel = LogSeverity.Critical
+                    LogLevel = LogSeverity.Debug
                 }))
                 .AddSingleton<CommandHandlingService>()
                 .AddSingleton<HttpClient>()
