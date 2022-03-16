@@ -10,8 +10,35 @@
         Width="1280"
         ResizeMode="NoResize"
         WindowStyle="None"
-        AllowsTransparency="True">
-
+        AllowsTransparency="True"
+        MouseDown="Window_MouseDown">
+    
+    <Window.Resources>
+        <Style x:Key="RoundedStyle" TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border>
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#FF5865F2"/>
+                                            <Setter Property="CornerRadius" Value="15"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <Grid Background="Transparent">
+                                <ContentPresenter></ContentPresenter>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
     <Grid Background="#FF36393F">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -31,31 +58,32 @@
                HorizontalContentAlignment="Center" 
                Foreground="White"
                FontFamily="Segoe UI Black"
-               FontSize="20" />
+               FontSize="20"/>
 
         <StackPanel Orientation="Vertical" Grid.Row="2" >
-            <Button BorderThickness="0" Background="Transparent" Margin="5">
-                <Image Source="Images\power.png"/>
+            <Button x:Name="PowerBtn" Command="{Binding SwitchPowerCommand}" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">
+                <Image Width="60" Height="70" Source="Images\power.png"/>
             </Button>
-            <Button BorderThickness="0" Background="Transparent" Margin="5">
-                <Image Source="Images\home.png"/>
+            <Button x:Name="HomeBtn" Command="{Binding SwitchHomeCommand}" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">
+                <Image Width="60" Height="70" Source="Images\home.png"/>
             </Button>
-
-            <Button BorderThickness="0" Background="Transparent" Margin="5">
-                <Image Source="Images\logs.png"/>
+            <Button x:Name="ModulesBtn" Command="{Binding SwitchModulesCommand}" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">
+                <Image Width="60" Height="70" Source="Images\extension.png"/>
             </Button>
-            <Button BorderThickness="0" Background="Transparent" Margin="5">
-                <Image Source="Images\extension.png"/>
+            <Button x:Name="SettingsBtn" Command="{Binding SwitchSettingsCommand}" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">
+                <Image Width="60" Height="70" Source="Images\config.png"/>
             </Button>
-            <Button BorderThickness="0" Background="Transparent" Margin="5">
-                <Image Source="Images\config.png"/>
+            <Button x:Name="LogsBtn" Command="{Binding SwitchLogsCommand}" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">
+                <Image Width="60" Height="70" Source="Images\logs.png"/>
             </Button>
-            <Button BorderThickness="0" Background="Transparent" Margin="5">
-                <Image Source="Images\info.png"/>
+            <Button x:Name="HelpBtn" Command="{Binding SwitchHelpCommand}" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">
+                <Image Width="60" Height="70" Source="Images\info.png"/>
             </Button>
-            <Button BorderThickness="0" Background="Transparent" Margin="5,130,5,5">
-                <Image Source="Images\exit.png"/>
+            <Button Click="ExitBtn_Click" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5,130,5,5">
+                <Image Width="60" Height="70" Source="Images\exit.png"/>
             </Button>
         </StackPanel>
+
+        <Frame Content="{Binding activeFrameContent}" NavigationUIVisibility="Hidden" x:Name="Main" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" />
     </Grid>
 </Window>

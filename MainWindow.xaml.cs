@@ -12,6 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using HostCord.View;
+using HostCord.ViewModels;
+
 
 namespace HostCord
 {
@@ -23,11 +26,23 @@ namespace HostCord
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new MainViewModel();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             new Bot().MainAsync("example");
+        }
+
+        private void ExitBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                this.DragMove();
         }
     }
 }
