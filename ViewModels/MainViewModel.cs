@@ -21,8 +21,6 @@ namespace HostCord.ViewModels
         Logs logsPage;
         Help helpPage;
 
-        BotConfigViewModel botConfigViewModel;
-
         Bot bot = new Bot();
 
         public ICommand SwitchPowerCommand { get; set; }
@@ -34,12 +32,10 @@ namespace HostCord.ViewModels
 
         public MainViewModel()
         {
-            botConfigViewModel = new BotConfigViewModel(ref bot);
-
             homePage = new Home(ref bot);
-            modulesPage = new Modules(ref botConfigViewModel);
-            settingsPage = new Settings(ref botConfigViewModel);
-            logsPage = new Logs(ref bot);
+            modulesPage = new Modules();
+            settingsPage = new Settings();
+            logsPage = new Logs();
             helpPage = new Help();
 
             activeFrameContent = homePage;
@@ -54,7 +50,7 @@ namespace HostCord.ViewModels
 
         private void SwitchPower(object obj)
         {
-            bot.MainAsync("NDUyNTQxMzIyNjY3MjI5MTk0.WxLj8w.7fKEktD-IWOCmGraaRsvDAs88D4");
+            bot.MainAsync("");
         }
 
         private void SwitchHome(object obj)     => activeFrameContent = homePage;

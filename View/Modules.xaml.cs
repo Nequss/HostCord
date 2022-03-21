@@ -1,5 +1,4 @@
-﻿using HostCord.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,12 +15,14 @@ using System.Windows.Shapes;
 
 namespace HostCord.View
 {
+    /// <summary>
+    /// Interaction logic for Modules.xaml
+    /// </summary>
     public partial class Modules : Page
     {
-        public Modules(ref BotConfigViewModel botConfigViewModel)
+        public Modules()
         {
             InitializeComponent();
-            DataContext = botConfigViewModel;
         }
     }
 }
