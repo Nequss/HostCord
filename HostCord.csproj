@@ -23,11 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Modules\" />
-    <Folder Include="Models\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="Images\config.png" />
     <Resource Include="Images\exit.png" />
     <Resource Include="Images\extension.png" />
