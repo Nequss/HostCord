@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <Folder Include="Modules\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,6 +33,7 @@
     <Resource Include="Images\extension.png" />
     <Resource Include="Images\home.png" />
     <Resource Include="Images\info.png" />
+    <Resource Include="Images\logo.png" />
     <Resource Include="Images\logs.png" />
     <Resource Include="Images\power.png" />
   </ItemGroup>

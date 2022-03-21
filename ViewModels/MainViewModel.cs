@@ -15,11 +15,13 @@ namespace HostCord.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        Home homePage         = new Home();
-        Modules modulesPage   = new Modules();
-        Settings settingsPage = new Settings();
-        Logs logsPage         = new Logs();
-        Help helpPage         = new Help();
+        Home homePage;
+        Modules modulesPage;
+        Settings settingsPage;
+        Logs logsPage;
+        Help helpPage;
+
+        Bot bot = new Bot();
 
         public ICommand SwitchPowerCommand { get; set; }
         public ICommand SwitchHomeCommand { get; set; }
@@ -30,6 +32,12 @@ namespace HostCord.ViewModels
 
         public MainViewModel()
         {
+            homePage = new Home(ref bot);
+            modulesPage = new Modules();
+            settingsPage = new Settings();
+            logsPage = new Logs();
+            helpPage = new Help();
+
             activeFrameContent = homePage;
 
             SwitchPowerCommand    = new RelayCommand(SwitchPower);
@@ -42,7 +50,7 @@ namespace HostCord.ViewModels
 
         private void SwitchPower(object obj)
         {
-            MessageBox.Show("Power Clicked");
+            bot.MainAsync("");
         }
 
         private void SwitchHome(object obj)     => activeFrameContent = homePage;

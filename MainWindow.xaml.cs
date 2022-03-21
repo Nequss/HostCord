@@ -29,11 +29,6 @@ namespace HostCord
             DataContext = new MainViewModel();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            new Bot().MainAsync("example");
-        }
-
         private void ExitBtn_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();

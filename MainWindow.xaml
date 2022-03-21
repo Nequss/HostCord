@@ -6,9 +6,9 @@
         xmlns:local="clr-namespace:HostCord"
         mc:Ignorable="d"
         Title="HostCord" 
-        Height="720" 
-        Width="1280"
-        ResizeMode="NoResize"
+        Height="525" 
+        Width="900"
+        ResizeMode="CanResize"
         WindowStyle="None"
         AllowsTransparency="True"
         MouseDown="Window_MouseDown">
@@ -42,11 +42,11 @@
     <Grid Background="#FF36393F">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="15*"/>
+            <ColumnDefinition Width="11*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="20*"/>
+            <RowDefinition Height="15*"/>
         </Grid.RowDefinitions>
 
         <Rectangle Grid.RowSpan="2" Fill="#FF202225"/>
@@ -54,7 +54,7 @@
 
         <Label Grid.ColumnSpan="2"
                Content="HostCord" 
-               VerticalContentAlignment="Center"
+               VerticalContentAlignment="Top"
                HorizontalContentAlignment="Center" 
                Foreground="White"
                FontFamily="Segoe UI Black"
@@ -62,28 +62,28 @@
 
         <StackPanel Orientation="Vertical" Grid.Row="2" >
             <Button x:Name="PowerBtn" Command="{Binding SwitchPowerCommand}" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">
-                <Image Width="60" Height="70" Source="Images\power.png"/>
+                <Image Width="50" Height="60" Source="Images\power.png"/>
             </Button>
             <Button x:Name="HomeBtn" Command="{Binding SwitchHomeCommand}" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">
-                <Image Width="60" Height="70" Source="Images\home.png"/>
+                <Image Width="50" Height="60" Source="Images\home.png"/>
             </Button>
             <Button x:Name="ModulesBtn" Command="{Binding SwitchModulesCommand}" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">
-                <Image Width="60" Height="70" Source="Images\extension.png"/>
+                <Image Width="50" Height="60" Source="Images\extension.png"/>
             </Button>
             <Button x:Name="SettingsBtn" Command="{Binding SwitchSettingsCommand}" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">
-                <Image Width="60" Height="70" Source="Images\config.png"/>
+                <Image Width="50" Height="60" Source="Images\config.png"/>
             </Button>
             <Button x:Name="LogsBtn" Command="{Binding SwitchLogsCommand}" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">
-                <Image Width="60" Height="70" Source="Images\logs.png"/>
+                <Image Width="50" Height="60" Source="Images\logs.png"/>
             </Button>
             <Button x:Name="HelpBtn" Command="{Binding SwitchHelpCommand}" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">
-                <Image Width="60" Height="70" Source="Images\info.png"/>
+                <Image Width="50" Height="60" Source="Images\info.png"/>
             </Button>
-            <Button Click="ExitBtn_Click" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5,130,5,5">
-                <Image Width="60" Height="70" Source="Images\exit.png"/>
+            <Button Click="ExitBtn_Click" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">
+                <Image Width="50" Height="60" Source="Images\exit.png"/>
             </Button>
         </StackPanel>
 
-        <Frame Content="{Binding activeFrameContent}" NavigationUIVisibility="Hidden" x:Name="Main" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" />
+        <Frame Content="{Binding activeFrameContent}" NavigationUIVisibility="Hidden" x:Name="Main" Grid.Column="1" Grid.Row="1" />
     </Grid>
 </Window>

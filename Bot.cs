@@ -11,26 +11,32 @@ using System.Net.NetworkInformation;
 using System.Threading;
 using System.Windows;
 using HostCord.Services;
+using HostCord.ViewModels;
 
 namespace HostCord
 {
-    internal class Bot
+    public class Bot
     {
+        public DiscordSocketClient client;
+        ServiceProvider services;
+
+        public Bot()
+        {
+            services = ConfigureServices();
+            client = services.GetRequiredService<DiscordSocketClient>();
+        }
+
         public async Task MainAsync(string token)
         {
-            using (var services = ConfigureServices())
-            {
-                var client = services.GetRequiredService<DiscordSocketClient>();
 
-                client.Log += Client_Log;
+            client.Log += Client_Log;
 
-                await client.LoginAsync(TokenType.Bot, token);
-                await client.StartAsync();
+            await client.LoginAsync(TokenType.Bot, token);
+            await client.StartAsync();
 
-                await services.GetRequiredService<CommandHandlingService>().InitializeAsync();
+            await services.GetRequiredService<CommandHandlingService>().InitializeAsync();
 
-                await Task.Delay(-1);
-            }
+            await Task.Delay(-1);
         }
 
         private Task Client_Log(LogMessage arg)
@@ -53,6 +59,7 @@ namespace HostCord
             return new ServiceCollection()
                 .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
                 {
+                    MessageCacheSize = 100,
                     LogLevel = LogSeverity.Debug
                 }))
                 .AddSingleton(new CommandService(new CommandServiceConfig

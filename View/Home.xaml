@@ -3,21 +3,241 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:HostCord.View"
+      xmlns:local="clr-namespace:HostCord.View" xmlns:viewmodels="clr-namespace:HostCord.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:HomeViewModel}"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Home">
 
-    <Grid Background="#FF36393F">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="15*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
+    <Page.Resources>
+        
+        <Style x:Key="RoundedStyle" TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border>
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#FF5865F2"/>
+                                            <Setter Property="CornerRadius" Value="30"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <Grid Background="Transparent">
+                                <ContentPresenter></ContentPresenter>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-        </Grid.RowDefinitions>
- 
-        <Label Content="Home Page" HorizontalAlignment="Center" FontSize="50" Foreground="White"/>
-        <TextBox HorizontalAlignment="Center" Width="320" Margin="0,175,0,225"/>
+        <Style x:Key="SquareStyle" TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border>
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#FF393C43"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <Grid Background="Transparent">
+                                <ContentPresenter></ContentPresenter>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type TextBox}">
+            <Style.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="CornerRadius" Value="5" />
+                </Style>
+            </Style.Resources>
+        </Style>
+        
+    </Page.Resources>
+    
+    <Grid>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="7.2*"/>
+            <ColumnDefinition Width="20*"/>
+            <ColumnDefinition Width="50*"/>
+            <ColumnDefinition Width="20*"/>
+        </Grid.ColumnDefinitions>
+        
+        <ScrollViewer Background="#FF202225" Grid.Column="0" VerticalScrollBarVisibility="Hidden">
+            <ItemsControl ItemsSource="{Binding serversViewModels}">
+
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Command="{Binding DataContext.GenerateChannelsCommand, RelativeSource={RelativeSource AncestorType=Page}}" 
+                                CommandParameter="{Binding name}" 
+                                Style="{DynamicResource RoundedStyle}" 
+                                Height="50" 
+                                Width="50"
+                                Margin="5,5,5,0"
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center">
+
+                            <Border Margin="3" CornerRadius="30">
+                                <Border.Background>
+                                    <ImageBrush Stretch="Fill" ImageSource="{Binding url}"/>
+                                </Border.Background>
+                            </Border>
+
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+            </ItemsControl>
+        </ScrollViewer>
+
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Hidden" Background="#FF2F3136">
+            <ItemsControl ItemsSource="{Binding channelsViewModels}">
+
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Style="{DynamicResource SquareStyle}"
+                                Command="{Binding DataContext.SetActiveChannelCommand, RelativeSource={RelativeSource AncestorType=Page}}" 
+                                CommandParameter="{Binding channelId}"
+                                HorizontalAlignment="Stretch"
+                                Background="Transparent"
+                                Height="30">
+
+                            <Label Content="{Binding channelName}"
+                                   Foreground="White"
+                                   Background="Transparent"
+                                   FontSize="14"/>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+            </ItemsControl>
+        </ScrollViewer>
+        
+        <StackPanel Background="Transparent" Grid.Column="2">
+            <Border Background="Transparent" 
+                    HorizontalAlignment="Stretch" 
+                    Height="30" 
+                    BorderBrush="Black"
+                    BorderThickness="0,0,0,0.1">
+                
+                <Label Background="#FF2F3136" 
+                       HorizontalAlignment="Stretch"
+                       Content="{Binding activeChannelName}"
+                       Foreground="White"
+                       FontSize="14"/>
+            </Border>
+
+            <Rectangle Height="430"/>
+
+            <ItemsControl ItemsSource="{Binding textBoxViewModels}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBox Text="{Binding text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 AcceptsReturn="False"
+                                 Background="#FF40444B"
+                                 Foreground="White"
+                                 HorizontalContentAlignment="Left"
+                                 VerticalContentAlignment="Center"
+                                 HorizontalAlignment="Stretch"
+                                 BorderThickness="0"
+                                 FontSize="15"
+                                 Height="30">
+                                 
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="Return"
+                                            Command="{Binding TextBoxSendCommand}"
+                                            CommandParameter="{Binding text}"/>
+                            </TextBox.InputBindings>
+                        </TextBox>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+
+        <ScrollViewer Name="chatViewer" ScrollChanged="ScrollViewer_ScrollChanged" Margin="0,30,0,30" Grid.Column="2" VerticalScrollBarVisibility="Hidden">
+            <ItemsControl ItemsSource="{Binding messagesViewModels}">
+
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+
+                        <StackPanel Orientation="Horizontal">
+
+                            <Border Height="40" Width="40" CornerRadius="30">
+                                <Border.Background>
+                                    <ImageBrush Stretch="Fill" ImageSource="{Binding userUrl}"/>
+                                </Border.Background>
+                            </Border>
+
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="{Binding sender}"
+                                           Foreground="White"
+                                           Background="Transparent"
+                                           FontSize="15"/>
+                                    <Label Content="{Binding time}"
+                                           Margin="0,4,0,0"
+                                           Foreground="DarkGray"
+                                           Background="Transparent"
+                                           FontSize="10"/>
+                                </StackPanel>
+                                <Label Content="{Binding messageContent}"
+                                       Margin="0,-10,0,0"
+                                       Foreground="White"
+                                       Background="Transparent"
+                                       FontSize="15"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <StackPanel Orientation="Vertical" Background="#FF2F3136" Grid.Column="3">
+            <Border Margin="0,20,0,20" Height="100" Width="100" CornerRadius="50">
+                <Border.Background>
+                    <ImageBrush Stretch="Fill" ImageSource="{Binding botImage}"/>
+                </Border.Background>
+            </Border>
+
+            <Label Margin="0,0,0,20" Content="{Binding botName}" Foreground="White" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Margin="0,0,0,20" Content="{Binding botLatency}" Foreground="White" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Margin="0,0,0,20" Content="{Binding botServers}" Foreground="White" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Margin="0,0,0,20" Content="{Binding botUptime}" Foreground="White" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Margin="0,0,0,20" Content="{Binding cpuUsage}" Foreground="White" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Margin="0,0,0,20" Content="{Binding ramUsage}" Foreground="White" HorizontalAlignment="Center" FontSize="20"/>
+
+        </StackPanel>
     </Grid>
 </Page>
