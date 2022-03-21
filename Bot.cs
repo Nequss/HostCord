@@ -12,13 +12,16 @@ using System.Threading;
 using System.Windows;
 using HostCord.Services;
 using HostCord.ViewModels;
+using System.Reflection;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace HostCord
 {
     public class Bot
     {
         public DiscordSocketClient client;
-        ServiceProvider services;
+        public ServiceProvider services;
 
         public Bot()
         {
@@ -28,9 +31,6 @@ namespace HostCord
 
         public async Task MainAsync(string token)
         {
-
-            client.Log += Client_Log;
-
             await client.LoginAsync(TokenType.Bot, token);
             await client.StartAsync();
 
@@ -39,27 +39,11 @@ namespace HostCord
             await Task.Delay(-1);
         }
 
-        private Task Client_Log(LogMessage arg)
-        {
-            /*
-            foreach (Window window in Application.Current.Windows)
-            {
-                if (window.GetType() == typeof(MainWindow))
-                {
-                    (window as MainWindow).Logs.Text += $"{arg}\n";
-                    return Task.CompletedTask;
-                }
-            }
-            */
-            return Task.CompletedTask;
-        }
-
         private ServiceProvider ConfigureServices()
         {
             return new ServiceCollection()
                 .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
                 {
-                    MessageCacheSize = 100,
                     LogLevel = LogSeverity.Debug
                 }))
                 .AddSingleton(new CommandService(new CommandServiceConfig
@@ -69,6 +53,14 @@ namespace HostCord
                 .AddSingleton<CommandHandlingService>()
                 .AddSingleton<HttpClient>()
                 .BuildServiceProvider();
+        }
+
+        public IEnumerable<ModuleInfo> GetModules()
+        {
+            var service = services.GetRequiredService<CommandService>();
+            service.AddModulesAsync(Assembly.GetEntryAssembly(), null);
+            var modules = service.Modules;  
+            return modules;
         }
     }
 }

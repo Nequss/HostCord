@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using HostCord.ViewModels;
 
 namespace HostCord.View
 {
@@ -20,9 +21,10 @@ namespace HostCord.View
     /// </summary>
     public partial class Logs : Page
     {
-        public Logs()
+        public Logs(ref Bot bot)
         {
             InitializeComponent();
+            DataContext = new LogsViewModel(ref bot);
         }
     }
 }
