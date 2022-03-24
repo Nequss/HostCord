@@ -17,6 +17,7 @@ using System.Collections.ObjectModel;
 using Discord.WebSocket;
 using System.Threading;
 using Discord;
+using HostCord.Utils;
 
 namespace HostCord.ViewModels
 {
@@ -25,6 +26,7 @@ namespace HostCord.ViewModels
         Bot _bot;
         DateTime startDate;
         DispatcherTimer dispatcherTimer;
+        PerformanceMonitor performanceMonitor = PerformanceMonitor.getInstance();
 
         public ObservableCollection<ServersViewModel> serversViewModels
         {
@@ -197,6 +199,9 @@ namespace HostCord.ViewModels
             botUptime = "Uptime: 0";
 
             dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += dispatcherTimer_Tick;
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+            dispatcherTimer.Start();
         }
 
         private Task Client_MessageReceived(SocketMessage message)
@@ -277,8 +282,13 @@ namespace HostCord.ViewModels
             return Task.CompletedTask;
         }
 
-        private void dispatcherTimer_Tick(object sender, EventArgs e) 
-            => botUptime = "Uptime: " + DateTime.Now.Subtract(startDate).ToString(@"hh\:mm\:ss");
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+             botUptime = "Uptime: " + DateTime.Now.Subtract(startDate).ToString(@"hh\:mm\:ss");
+
+             cpuUsage = $"{performanceMonitor.cpuUsage} %";
+             ramUsage = $"{performanceMonitor.ramUsage} MB";
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
