@@ -17,12 +17,18 @@ using System.Runtime.CompilerServices;
 using System.Security;
 using Microsoft.Extensions.DependencyInjection;
 using Discord.Commands;
+using HostCord.Models;
+using HostCord.Utils;
+using System.Windows.Threading;
 
 namespace HostCord.ViewModels
 {
     public class BotConfigViewModel : INotifyPropertyChanged
     {
         Bot _bot;
+        PerformanceMonitor performanceMonitor = PerformanceMonitor.getInstance();
+        DispatcherTimer dispatcherTimer;
+
 
         private string _token;
         public string token
@@ -181,6 +187,28 @@ namespace HostCord.ViewModels
             get { return _commandsViewModels; }
         }
 
+        private ObservableCollection<ComboBoxAction> _comboBoxActions = new ObservableCollection<ComboBoxAction>()
+        { 
+            new ComboBoxAction(0, "No Action"),
+            new ComboBoxAction(1, "Message Deletion"),
+            new ComboBoxAction(2, "Message Deletion and Kick User"),
+            new ComboBoxAction(3, "Message Deletion and Ban User"),
+        };
+        public ObservableCollection<ComboBoxAction> comboBoxActions
+        {
+            get { return _comboBoxActions; }
+        }
+
+        private ComboBoxAction _selectedAction;
+        public ComboBoxAction selectedAction
+        {
+            get { return _selectedAction; }
+            set 
+            { 
+                _selectedAction = value;
+            }
+        }
+
         public ICommand GenerateCommandsCommand { get; set; }
 
         public BotConfigViewModel(ref Bot bot)
@@ -193,11 +221,9 @@ namespace HostCord.ViewModels
             servers = 0;
             textChannels = 0;
             status = "Disconnected";
+            filterWords = "";
 
-            cpu = "0 %";
-            ram = "0 MB";
-            bytesSent = "0 B";
-            bytesReceived = "0 B";
+            selectedAction = comboBoxActions[0];
 
             GenerateCommandsCommand = new RelayCommand(GenerateCommands);
 
@@ -213,6 +239,11 @@ namespace HostCord.ViewModels
             _bot.client.UserJoined      += Client_UserJoined;
             _bot.client.UserLeft        += Client_UserLeft;
             _bot.services.GetRequiredService<CommandService>().CommandExecuted += BotConfigViewModel_CommandExecuted;
+            
+            dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += dispatcherTimer_Tick;
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+            dispatcherTimer.Start();
         }
 
         private void GenerateCommands(object obj)
@@ -272,9 +303,28 @@ namespace HostCord.ViewModels
             return Task.CompletedTask;
         }
 
-        private Task Client_MessageReceived(SocketMessage arg)
+        private Task Client_MessageReceived(SocketMessage message)
         {
             messages++;
+
+            if (CheckFilters(message.Content))
+            {
+                switch (selectedAction.id)
+                {
+                    case 1:
+                        message.DeleteAsync();
+                        break;
+                    case 2:
+                        KickUser(message.Author.Id);
+                        message.DeleteAsync();
+                        break;
+                    case 3:
+                        BanUser(message.Author.Id);
+                        message.DeleteAsync();
+                        break;
+                }
+            }
+
             return Task.CompletedTask;
         }
 
@@ -282,6 +332,38 @@ namespace HostCord.ViewModels
         {
             commands++;
             return Task.CompletedTask;
+        }
+
+        public bool CheckFilters(string message)
+        {
+            foreach (string word in message.Split(" "))
+                foreach (string filter in filterWords.Split(","))
+                    if (word == filter)
+                        return true;
+
+            return false;
+        }
+
+        public async Task KickUser(ulong id)
+        {
+            foreach (var guild in _bot.client.Guilds)
+                foreach (var user in guild.Users)
+                    if (user.Id == id)
+                        await user.KickAsync();
+        }
+
+        public async Task BanUser(ulong id)
+        {
+            foreach (var guild in _bot.client.Guilds)
+                foreach (var user in guild.Users)
+                    if (user.Id == id)
+                        await user.BanAsync();
+        }
+
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            cpu = $"{performanceMonitor.cpuUsage} %";
+            ram = $"{performanceMonitor.ramUsage} MB";
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

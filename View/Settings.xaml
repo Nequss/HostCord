@@ -193,11 +193,10 @@
             <Label Content="Action"
                    Foreground="White"
                    FontSize="15"/>
-            <ComboBox Style="{StaticResource ComboBoxFlatStyle}">
-                <ComboBoxItem Content="Message Deletion"/>
-                <ComboBoxItem Content="Message Deletion and Kick User"/>
-                <ComboBoxItem Content="Message Deletion and Ban User"/>
-            </ComboBox>
+            <ComboBox Style="{StaticResource ComboBoxFlatStyle}"
+                      ItemsSource="{Binding Path=comboBoxActions}"   
+                      SelectedItem="{Binding Path=selectedAction}"  
+                      DisplayMemberPath="text"/>
 
         </StackPanel>
 

@@ -18,9 +18,8 @@ namespace HostCord.Services
         private readonly DiscordSocketClient _discord;
         private readonly IServiceProvider _services;
 
-        private int prefixPos;
+        private int prefixPos = 0;
         private string prefix;
-        private string[] filters;
 
         public CommandHandlingService(IServiceProvider services, DiscordSocketClient client)
         {
@@ -33,36 +32,16 @@ namespace HostCord.Services
         }
 
         public async Task InitializeAsync()
-        {
-            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
-        }
+            => await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
 
         public void SetPrefix(string prefix)
             => this.prefix = prefix;
-
-        public void SetFilters(string filters)
-             => this.filters = filters.Split(',');
-
-        public bool CheckFilters(string message)
-        {
-            foreach (string word in message.Split(' '))
-                foreach (string filter in filters)
-                    if (word == filter)
-                        return true;
-
-            return false;
-        }
 
         public async Task MessageReceivedAsync(SocketMessage rawMessage)
         {
             if (!(rawMessage is SocketUserMessage message)) return;
             if (message.Source != MessageSource.User) return;
             if (!message.HasCharPrefix(char.Parse(prefix), ref prefixPos)) return;
-
-            if(CheckFilters(message.Content))
-            {
-
-            }
 
             var context = new SocketCommandContext(_discord, message);
 
