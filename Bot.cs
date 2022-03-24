@@ -15,6 +15,9 @@ using HostCord.ViewModels;
 using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
+using HostCord.BotModules;
+using System.Security;
+using System.Runtime.InteropServices;
 
 namespace HostCord
 {
@@ -22,19 +25,24 @@ namespace HostCord
     {
         public DiscordSocketClient client;
         public ServiceProvider services;
+        public CommandHandlingService commandHandler;
+
+        public string token;
+        public string prefix;
 
         public Bot()
         {
             services = ConfigureServices();
-            client = services.GetRequiredService<DiscordSocketClient>();
+            client   = services.GetRequiredService<DiscordSocketClient>();
+            commandHandler = services.GetRequiredService<CommandHandlingService>();
         }
 
-        public async Task MainAsync(string token)
+        public async Task MainAsync()
         {
             await client.LoginAsync(TokenType.Bot, token);
             await client.StartAsync();
 
-            await services.GetRequiredService<CommandHandlingService>().InitializeAsync();
+            await commandHandler.InitializeAsync();
 
             await Task.Delay(-1);
         }
@@ -59,7 +67,7 @@ namespace HostCord
         {
             var service = services.GetRequiredService<CommandService>();
             service.AddModulesAsync(Assembly.GetEntryAssembly(), null);
-            var modules = service.Modules;  
+            var modules = service.Modules;
             return modules;
         }
     }

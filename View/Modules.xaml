@@ -91,30 +91,19 @@
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="10*"/>
-                                <ColumnDefinition Width="50*"/>
-                            </Grid.ColumnDefinitions>
+                        <Button Command="{Binding DataContext.GenerateCommandsCommand, RelativeSource={RelativeSource AncestorType=Page}}" 
+                                CommandParameter="{Binding moduleName}" 
+                                Style="{DynamicResource SquareStyle}"
+                                Grid.Column="1"
+                                Background="Transparent"
+                                HorizontalContentAlignment ="Stretch">
                             
-                            <CheckBox Grid.Column="0"
-                                      IsChecked="{Binding selected}"
-                                      VerticalAlignment="Center"/>
-                            
-                            <Button Command="{Binding DataContext.GenerateCommandsCommand, RelativeSource={RelativeSource AncestorType=Page}}" 
-                                    CommandParameter="{Binding moduleName}" 
-                                    Style="{DynamicResource SquareStyle}"
-                                    Grid.Column="1"
-                                    Background="Transparent"
-                                    HorizontalContentAlignment ="Stretch">
-                                
-                                <Label Content="{Binding moduleName}"
-                                       HorizontalContentAlignment="Stretch"
-                                       Foreground="White"
-                                       Background="Transparent"
-                                       FontSize="14"/>
-                            </Button>
-                        </Grid>
+                            <Label Content="{Binding moduleName}"
+                                   HorizontalContentAlignment="Stretch"
+                                   Foreground="White"
+                                   Background="Transparent"
+                                   FontSize="14"/>
+                        </Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
 

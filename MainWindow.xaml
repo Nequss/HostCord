@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:HostCord"
         mc:Ignorable="d"
         Title="HostCord" 
-        Height="525" 
+        Height="490" 
         Width="900"
         ResizeMode="CanResize"
         WindowStyle="None"
@@ -44,21 +44,8 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="11*"/>
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="15*"/>
-        </Grid.RowDefinitions>
 
         <Rectangle Grid.RowSpan="2" Fill="#FF202225"/>
-        <Rectangle Grid.ColumnSpan="2" Fill="#FF202225"/>
-
-        <Label Grid.ColumnSpan="2"
-               Content="HostCord" 
-               VerticalContentAlignment="Top"
-               HorizontalContentAlignment="Center" 
-               Foreground="White"
-               FontFamily="Segoe UI Black"
-               FontSize="20"/>
 
         <StackPanel Orientation="Vertical" Grid.Row="2" >
             <Button x:Name="PowerBtn" Command="{Binding SwitchPowerCommand}" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">

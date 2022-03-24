@@ -195,23 +195,24 @@ namespace HostCord.ViewModels
             botLatency = "Latency: 0";
             botServers = "Servers: 0";
             botUptime = "Uptime: 0";
-            cpuUsage = "CPU Usage: 0";
-            ramUsage = "RAM Usage: 0";
 
             dispatcherTimer = new DispatcherTimer();
         }
 
         private Task Client_MessageReceived(SocketMessage message)
         {
-            if (message.Channel.Id != activeChannel.Id)
-                return Task.CompletedTask;
+            if (activeChannel != null)
+            {
+                if (message.Channel.Id != activeChannel.Id)
+                    return Task.CompletedTask;
 
-            Application.Current.Dispatcher.BeginInvoke(()
-                => messagesViewModels.Add(new MessagesViewModel(
-                    message.Author.GetAvatarUrl(),
-                    message.Author.Username,
-                    message.Timestamp.ToString(),
-                    message.Content)));
+                Application.Current.Dispatcher.BeginInvoke(()
+                    => messagesViewModels.Add(new MessagesViewModel(
+                        message.Author.GetAvatarUrl(),
+                        message.Author.Username,
+                        message.Timestamp.ToString(),
+                        message.Content)));
+            }
 
             return Task.CompletedTask;
         }
@@ -276,58 +277,14 @@ namespace HostCord.ViewModels
             return Task.CompletedTask;
         }
 
-        private void dispatcherTimer_Tick(object sender, EventArgs e)
-        {
-            botUptime = "Uptime: " + DateTime.Now.Subtract(startDate).ToString(@"hh\:mm\:ss");
-
-            string[] usage = GetUsage();
-
-            cpuUsage = "CPU: " + usage[0] + "%";
-            ramUsage = "RAM:" + usage[1] + "MB";
-        }
+        private void dispatcherTimer_Tick(object sender, EventArgs e) 
+            => botUptime = "Uptime: " + DateTime.Now.Subtract(startDate).ToString(@"hh\:mm\:ss");
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public string[] GetUsage()
-        {
-            var process = Process.GetCurrentProcess();
-
-            var name = string.Empty;
-
-            foreach (var instance in new PerformanceCounterCategory("Process").GetInstanceNames())
-            {
-                if (instance.StartsWith(process.ProcessName))
-                {
-                    using (var processId = new PerformanceCounter("Process", "ID Process", instance, true))
-                    {
-                        if (process.Id == (int)processId.RawValue)
-                        {
-                            name = instance;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            var cpu = new PerformanceCounter("Process", "% Processor Time", name, true);
-            var ram = new PerformanceCounter("Process", "Private Bytes", name, true);
-
-            cpu.NextValue();
-            ram.NextValue();
-
-            //https://stackoverflow.com/questions/12262645/performance-counter-inaccurate-in-c-sharp
-
-            string[] usage = new string[] { 
-                Math.Round(cpu.NextValue() / Environment.ProcessorCount, 2).ToString(),
-                Math.Round(ram.NextValue() / 1024 / 1024, 2).ToString()
-            };
-
-            return usage;
         }
     }
 }

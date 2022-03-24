@@ -26,5 +26,27 @@ namespace HostCord.View
             InitializeComponent();
             DataContext = new LogsViewModel(ref bot);
         }
+
+        private bool AutoScroll = true;
+
+        private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (e.ExtentHeightChange == 0)
+            {  
+                if (logsViever.VerticalOffset == logsViever.ScrollableHeight)
+                {   
+                    AutoScroll = true;
+                }
+                else
+                {  
+                    AutoScroll = false;
+                }
+            }
+
+            if (AutoScroll && e.ExtentHeightChange != 0)
+            {  
+                logsViever.ScrollToVerticalOffset(logsViever.ExtentHeight);
+            }
+        }
     }
 }

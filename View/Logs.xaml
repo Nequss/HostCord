@@ -8,7 +8,23 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Logs">
 
-    <Grid>
-        <Label Content="Logs Page" HorizontalAlignment="Center" FontSize="50" Foreground="White"/>
+    <Grid Background="#FF2F3136">
+        <ScrollViewer Name="logsViever"
+                      Background="#FF40444B"
+                      Margin="20"
+                      ScrollChanged="ScrollViewer_ScrollChanged"
+                      VerticalScrollBarVisibility="Hidden">
+            <TextBox Text="{Binding textLog}"
+                     Background="Transparent"
+                     Foreground="White"
+                     BorderThickness="0"
+                     FontSize="15"
+                     IsReadOnly="True"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     ScrollViewer.CanContentScroll="True"
+                     TextWrapping="Wrap">
+            </TextBox>
+        </ScrollViewer>
     </Grid>
 </Page>

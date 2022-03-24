@@ -8,7 +8,421 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Settings">
 
-    <Grid>
-        <Label Content="Settings Page" HorizontalAlignment="Center" FontSize="50" Foreground="White"/>
+    <Page.Resources>
+        <SolidColorBrush x:Key="ComboBoxNormalBorderBrush" Color="#FF40444B" />
+        <SolidColorBrush x:Key="ComboBoxNormalBackgroundBrush" Color="#FF40444B" />
+        <SolidColorBrush x:Key="ComboBoxDisabledForegroundBrush" Color="#FF40444B" />
+        <SolidColorBrush x:Key="ComboBoxDisabledBackgroundBrush" Color="#FF40444B" />
+        <SolidColorBrush x:Key="ComboBoxDisabledBorderBrush" Color="#FF40444B" />
+
+        <ControlTemplate TargetType="ToggleButton" x:Key="ComboBoxToggleButtonTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+                <Border Grid.ColumnSpan="2" Name="Border"
+                        BorderBrush="{StaticResource ComboBoxNormalBorderBrush}" 
+                        CornerRadius="0" 
+                        BorderThickness="1, 1, 1, 1" 
+                        Background="{StaticResource ComboBoxNormalBackgroundBrush}" />
+                <Border Grid.Column="1" 
+                        Margin="1, 1, 1, 1"
+                        BorderBrush="#FF40444B" 
+                        Name="ButtonBorder"
+                        CornerRadius="0, 0, 0, 0" 
+                        BorderThickness="0, 0, 0, 0" 
+                        Background="{StaticResource ComboBoxNormalBackgroundBrush}" />
+
+                <Path Name="Arrow" Grid.Column="1" 
+                      Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
+                      HorizontalAlignment="Center" 
+                      Fill="#FF40444B"
+                      VerticalAlignment="Center" />
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="UIElement.IsMouseOver" Value="True">
+                    <Setter Property="Panel.Background" TargetName="ButtonBorder" Value="#FF40444B"/>
+                    <Setter Property="Shape.Fill" TargetName="Arrow" Value="White"/>
+                </Trigger>
+                <Trigger Property="ToggleButton.IsChecked" Value="True">
+                    <Setter Property="Panel.Background" TargetName="ButtonBorder" Value="#FF40444B"/>
+                    <Setter Property="Shape.Fill" TargetName="Arrow" Value="White"/>
+                </Trigger>
+                <Trigger Property="UIElement.IsEnabled" Value="False">
+                    <Setter Property="Panel.Background" TargetName="Border" Value="{StaticResource ComboBoxDisabledBackgroundBrush}"/>
+                    <Setter Property="Panel.Background" TargetName="ButtonBorder" Value="{StaticResource ComboBoxDisabledBackgroundBrush}"/>
+                    <Setter Property="Border.BorderBrush" TargetName="ButtonBorder" Value="{StaticResource ComboBoxDisabledBorderBrush}"/>
+                    <Setter Property="TextElement.Foreground" Value="{StaticResource ComboBoxDisabledForegroundBrush}"/>
+                    <Setter Property="Shape.Fill" TargetName="Arrow" Value="White"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <Style x:Key="ComboBoxFlatStyle" TargetType="{x:Type ComboBox}">
+            <Setter Property="UIElement.SnapsToDevicePixels" Value="True"/>
+            <Setter Property="FrameworkElement.OverridesDefaultStyle" Value="True"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
+            <Setter Property="TextElement.Foreground" Value="White"/>
+            <Setter Property="FrameworkElement.FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton Name="ToggleButton"
+                                          Grid.Column="2"
+                                          ClickMode="Press" 
+                                          Focusable="False"
+                                          IsChecked="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                          Template="{StaticResource ComboBoxToggleButtonTemplate}"/>
+                            <ContentPresenter Name="ContentSite"
+                                              Margin="5" 
+                                              IsHitTestVisible="False"
+                                              HorizontalAlignment="Left"
+                                              VerticalAlignment="Center"                              
+                                              Content="{TemplateBinding ComboBox.SelectionBoxItem}" 
+                                              ContentTemplate="{TemplateBinding ComboBox.SelectionBoxItemTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"/>
+                            <TextBox Name="PART_EditableTextBox" 
+                                     Margin="5, 3, 23, 3"                     
+                                     IsReadOnly="{TemplateBinding IsReadOnly}"
+                                     Visibility="Hidden" 
+                                     Background="Transparent"
+                                     HorizontalAlignment="Left" 
+                                     VerticalAlignment="Center"
+                                     Focusable="True" >
+                                <TextBox.Template>
+                                    <ControlTemplate TargetType="TextBox" >
+                                        <Border Name="PART_ContentHost" 
+                                                Background="#FF40444B"
+                                                Focusable="False" />
+                                    </ControlTemplate>
+                                </TextBox.Template>
+                            </TextBox>
+                            <!-- Popup showing items -->
+                            <Popup Name="Popup" 
+                                   Placement="Bottom"
+                                   Focusable="False" 
+                                   AllowsTransparency="True"
+                                   IsOpen="{TemplateBinding ComboBox.IsDropDownOpen}"
+                                   PopupAnimation="Slide">
+                                <Grid Name="DropDown"
+                                      SnapsToDevicePixels="True"
+                                      Background="#FF40444B"
+                                      MinWidth="{TemplateBinding FrameworkElement.ActualWidth}"
+                                      MaxHeight="{TemplateBinding ComboBox.MaxDropDownHeight}">
+                                    <Border Name="DropDownBorder"
+                                            Background="#FF40444B" 
+                                            Margin="0, 1, 0, 0"
+                                            CornerRadius="0" 
+                                            BorderThickness="1,1,1,1" 
+                                            BorderBrush="{StaticResource ComboBoxNormalBorderBrush}"/>
+                                    <ScrollViewer Margin="4" 
+                                                  Background="#FF40444B"
+                                                  SnapsToDevicePixels="True">
+                                        <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="ItemsControl.HasItems" Value="False">
+                                <Setter Property="FrameworkElement.MinHeight" TargetName="DropDownBorder" Value="95"/>
+                            </Trigger>
+                            <Trigger Property="UIElement.IsEnabled" Value="False">
+                                <Setter Property="TextElement.Foreground" Value="{StaticResource ComboBoxDisabledForegroundBrush}"/>
+                            </Trigger>
+                            <Trigger Property="ItemsControl.IsGrouping" Value="True">
+                                <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
+                            </Trigger>
+                            <Trigger Property="ComboBox.IsEditable" Value="True">
+                                <Setter Property="KeyboardNavigation.IsTabStop" Value="False"/>
+                                <Setter Property="UIElement.Visibility" TargetName="PART_EditableTextBox" Value="Visible"/>
+                                <Setter Property="UIElement.Visibility" TargetName="ContentSite" Value="Hidden"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Grid Background="#FF2F3136">
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50*"/>
+            <ColumnDefinition Width="50*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Vertical"
+                    Grid.Column="0"
+                    Margin="5">
+            
+            <Label Content="Token"
+                   Foreground="White"
+                   FontSize="15"/>
+            <TextBox Text="{Binding token}"
+                     VerticalContentAlignment="Center"
+                     Foreground="White"
+                     Background="#FF40444B"
+                     Height="25"
+                     BorderThickness="0"/>
+            
+            <Label Content="Prefix"
+                   Foreground="White"
+                   FontSize="15"/>
+            <TextBox Text="{Binding prefix}"
+                     MaxLength="1"
+                     Background="#FF40444B"
+                     Foreground="White"
+                     Height="25"
+                     BorderThickness="0"/>
+
+            <Label Content="Filter words | Use comas to separate the words"
+                   Foreground="White"
+                   FontSize="15"/>
+            <TextBox Text="{Binding filterWords}"
+                     Foreground="White"
+                     Background="#FF40444B"
+                     BorderThickness="0"
+                     Height="285"
+                     TextWrapping="Wrap"/>
+
+            <Label Content="Action"
+                   Foreground="White"
+                   FontSize="15"/>
+            <ComboBox Style="{StaticResource ComboBoxFlatStyle}">
+                <ComboBoxItem Content="Message Deletion"/>
+                <ComboBoxItem Content="Message Deletion and Kick User"/>
+                <ComboBoxItem Content="Message Deletion and Ban User"/>
+            </ComboBox>
+
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical"
+                    Grid.Column="1"
+                    Margin="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50*"/>
+                    <ColumnDefinition Width="50*"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Content="Bot Statistics"
+                       Foreground="White"
+                       FontSize="15" 
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Grid.Column="0"/>
+
+                <Label Content="HostCord v1.0"
+                       Foreground="White"
+                       FontSize="15"
+                       Grid.Column="1"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"/>
+
+            </Grid>
+
+            <Rectangle Fill="#FF40444B"
+                       Height="1"/>
+
+            <Grid>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50*"/>
+                    <ColumnDefinition Width="50*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Vertical"
+                            Margin="5"
+                            Grid.Column="0">
+
+                    <StackPanel Orientation="Vertical"
+                            Grid.Column="1">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50*"/>
+                                <ColumnDefinition Width="50*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Content="Servers:"
+                               Foreground="White"
+                               Grid.Column="0"
+                               HorizontalAlignment="Right"/>
+
+                            <Label Content="{Binding servers}"
+                               Foreground="White"
+                               Grid.Column="1"/>
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50*"/>
+                                <ColumnDefinition Width="50*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Content="Text Channels:"
+                               Foreground="White"
+                               Grid.Column="0"
+                               HorizontalAlignment="Right"/>
+
+                            <Label Content="{Binding textChannels}"
+                               Foreground="White"
+                               Grid.Column="1"/>
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50*"/>
+                                <ColumnDefinition Width="50*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Content="Users:"
+                               Foreground="White"
+                               Grid.Column="0"
+                               HorizontalAlignment="Right"/>
+
+                            <Label Content="{Binding users}"
+                               Foreground="White"
+                               Grid.Column="1"/>
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50*"/>
+                                <ColumnDefinition Width="50*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Content="Messages:"
+                               Foreground="White"
+                               Grid.Column="0"
+                               HorizontalAlignment="Right"/>
+
+                            <Label Content="{Binding messages}"
+                               Foreground="White"
+                               Grid.Column="1"/>
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50*"/>
+                                <ColumnDefinition Width="50*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Content="Commands:"
+                               Foreground="White"
+                               Grid.Column="0"
+                               HorizontalAlignment="Right"/>
+
+                            <Label Content="{Binding commands}"
+                               Foreground="White"
+                               Grid.Column="1"/>
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50*"/>
+                                <ColumnDefinition Width="50*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Content="Status:"
+                               Foreground="White"
+                               Grid.Column="0"
+                               HorizontalAlignment="Right"/>
+
+                            <Label Content="{Binding status}"
+                               Foreground="White"
+                               Grid.Column="1"/>
+                        </Grid>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical"
+                            Margin="5"
+                            Grid.Column="1">
+
+                    <Label Content="PC Resources Usage"
+                           Foreground="White"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50*"/>
+                            <ColumnDefinition Width="50*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="CPU:"
+                               Foreground="White"
+                               Grid.Column="0"
+                               HorizontalAlignment="Right"/>
+
+                        <Label Content="{Binding cpu}"
+                               Foreground="White"
+                               Grid.Column="1"/>
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50*"/>
+                            <ColumnDefinition Width="50*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="RAM:"
+                               Foreground="White"
+                               Grid.Column="0"
+                               HorizontalAlignment="Right"/>
+
+                        <Label Content="{Binding ram}"
+                               Foreground="White"
+                               Grid.Column="1"/>
+                    </Grid>
+
+                    <Rectangle Fill="#FF40444B"
+                           Height="1"/>
+
+                    <Label Content="Network Usage"
+                           Foreground="White"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50*"/>
+                            <ColumnDefinition Width="50*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Bytes sent:"
+                               Foreground="White"
+                               Grid.Column="0"
+                               HorizontalAlignment="Right"/>
+
+                        <Label Content="{Binding bytesSent}"
+                               Foreground="White"
+                               Grid.Column="1"/>
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50*"/>
+                            <ColumnDefinition Width="50*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Bytes received:"
+                               Foreground="White"
+                               Grid.Column="0"
+                               HorizontalAlignment="Right"/>
+
+                        <Label Content="{Binding bytesReceived}"
+                               Foreground="White"
+                               Grid.Column="1"/>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+
+            <Rectangle Fill="#FF40444B"
+                       Height="1"/>
+
+        </StackPanel>
     </Grid>
 </Page>

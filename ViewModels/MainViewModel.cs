@@ -52,11 +52,7 @@ namespace HostCord.ViewModels
             SwitchHelpCommand     = new RelayCommand(SwitchHelp);
         }
 
-        private void SwitchPower(object obj)
-        {
-            bot.MainAsync("NDUyNTQxMzIyNjY3MjI5MTk0.WxLj8w.7fKEktD-IWOCmGraaRsvDAs88D4");
-        }
-
+        private void SwitchPower(object obj)    => bot.MainAsync();
         private void SwitchHome(object obj)     => activeFrameContent = homePage;
         private void SwitchModules(object obj)  => activeFrameContent = modulesPage;
         private void SwitchSettings(object obj) => activeFrameContent = settingsPage;
