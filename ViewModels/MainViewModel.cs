@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using HostCord.View;
 using System.Windows.Input;
 using HostCord.Commands;
-using System.Windows;
+using HostCord.Utils;
 
 namespace HostCord.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
-    {
+    { 
         Home homePage;
         Modules modulesPage;
         Settings settingsPage;
@@ -35,6 +30,8 @@ namespace HostCord.ViewModels
         public MainViewModel()
         {
             botConfigViewModel = new BotConfigViewModel(ref bot);
+            
+            PerformanceMonitor.getInstance().start();
 
             homePage = new Home(ref bot);
             modulesPage = new Modules(ref botConfigViewModel);
