@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using HostCord.Utils;
 using HostCord.View;
 using HostCord.ViewModels;
 
@@ -31,6 +32,7 @@ namespace HostCord
 
         private void ExitBtn_Click(object sender, RoutedEventArgs e)
         {
+            PerformanceMonitor.getInstance().stop();
             Application.Current.Shutdown();
         }
 
