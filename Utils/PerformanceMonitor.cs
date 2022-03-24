@@ -59,7 +59,6 @@ public class PerformanceMonitor
             cpuUsage = (float) Math.Round(getCPUUsage());
             ramUsage = (float) Math.Round(getRAMUsage());
             Thread.Sleep(pollingIntervalMS / 2);
-            Console.WriteLine($"C:{cpuUsage}, M:{ramUsage}");
         }
     }
 
