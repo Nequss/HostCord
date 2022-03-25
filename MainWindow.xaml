@@ -45,32 +45,95 @@
             <ColumnDefinition Width="11*"/>
         </Grid.ColumnDefinitions>
 
-        <Rectangle Grid.RowSpan="2" Fill="#FF202225"/>
+        <Rectangle Grid.RowSpan="2" 
+                   Fill="#FF202225"/>
 
-        <StackPanel Orientation="Vertical" Grid.Row="2" >
-            <Button x:Name="PowerBtn" Command="{Binding SwitchPowerCommand}" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">
-                <Image Width="50" Height="60" Source="Images\power.png"/>
+        <StackPanel Orientation="Vertical"
+                    Grid.Row="2">
+            
+            <Button Command="{Binding SwitchPowerCommand}"
+                    Style="{StaticResource RoundedStyle}" 
+                    BorderThickness="0"
+                    Background="Transparent"
+                    Margin="5">
+                <Image Width="50" 
+                       Height="60" 
+                       Source="{Binding powerUrl}" 
+                       RenderOptions.BitmapScalingMode="Fant"/>
             </Button>
-            <Button x:Name="HomeBtn" Command="{Binding SwitchHomeCommand}" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">
-                <Image Width="50" Height="60" Source="Images\home.png"/>
+            
+            <Button Command="{Binding SwitchHomeCommand}"
+                    Style="{StaticResource RoundedStyle}"
+                    BorderThickness="0"
+                    Background="Transparent" 
+                    Margin="5">
+                <Image Width="50"
+                       Height="60" 
+                       Source="{Binding homeUrl}"
+                       RenderOptions.BitmapScalingMode="Fant"/>
             </Button>
-            <Button x:Name="ModulesBtn" Command="{Binding SwitchModulesCommand}" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">
-                <Image Width="50" Height="60" Source="Images\extension.png"/>
+            
+            <Button Command="{Binding SwitchModulesCommand}"
+                    Style="{StaticResource RoundedStyle}" 
+                    BorderThickness="0"
+                    Background="Transparent"
+                    Margin="5">
+                <Image Width="50"
+                       Height="60"
+                       Source="{Binding modulesUrl}" 
+                       RenderOptions.BitmapScalingMode="Fant"/>
             </Button>
-            <Button x:Name="SettingsBtn" Command="{Binding SwitchSettingsCommand}" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">
-                <Image Width="50" Height="60" Source="Images\config.png"/>
+            
+            <Button Command="{Binding SwitchSettingsCommand}" 
+                    Style="{StaticResource RoundedStyle}" 
+                    BorderThickness="0"
+                    Background="Transparent"
+                    Margin="5">
+                <Image Width="50"
+                       Height="60" 
+                       Source="{Binding settingsUrl}"
+                       RenderOptions.BitmapScalingMode="Fant"/>
             </Button>
-            <Button x:Name="LogsBtn" Command="{Binding SwitchLogsCommand}" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">
-                <Image Width="50" Height="60" Source="Images\logs.png"/>
+            
+            <Button Command="{Binding SwitchLogsCommand}" 
+                    Style="{StaticResource RoundedStyle}" 
+                    BorderThickness="0" 
+                    Background="Transparent" 
+                    Margin="5">
+                <Image Width="50"
+                       Height="60" 
+                       Source="{Binding logsUrl}"
+                       RenderOptions.BitmapScalingMode="Fant"/>
             </Button>
-            <Button x:Name="HelpBtn" Command="{Binding SwitchHelpCommand}" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">
-                <Image Width="50" Height="60" Source="Images\info.png"/>
+            
+            <Button Command="{Binding SwitchHelpCommand}"
+                    Style="{StaticResource RoundedStyle}"
+                    BorderThickness="0" 
+                    Background="Transparent"
+                    Margin="5">
+                <Image Width="50" 
+                       Height="60" 
+                       Source="{Binding helpUrl}" 
+                       RenderOptions.BitmapScalingMode="Fant"/>
             </Button>
-            <Button Click="ExitBtn_Click" Style="{StaticResource RoundedStyle}" BorderThickness="0" Background="Transparent" Margin="5">
-                <Image Width="50" Height="60" Source="Images\exit.png"/>
+            
+            <Button Click="ExitBtn_Click"
+                    Style="{StaticResource RoundedStyle}" 
+                    BorderThickness="0"
+                    Background="Transparent"
+                    Margin="5">
+                <Image Width="50"
+                       Height="60"
+                       Source="{Binding exitUrl}" 
+                       RenderOptions.BitmapScalingMode="Fant"/>
             </Button>
+            
         </StackPanel>
 
-        <Frame Content="{Binding activeFrameContent}" NavigationUIVisibility="Hidden" x:Name="Main" Grid.Column="1" Grid.Row="1" />
+        <Frame Content="{Binding activeFrameContent}" 
+               NavigationUIVisibility="Hidden"
+               x:Name="Main"
+               Grid.Column="1"
+               Grid.Row="1" />
     </Grid>
 </Window>

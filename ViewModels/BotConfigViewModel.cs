@@ -20,6 +20,7 @@ using Discord.Commands;
 using HostCord.Models;
 using HostCord.Utils;
 using System.Windows.Threading;
+using Octokit;
 
 namespace HostCord.ViewModels
 {
@@ -175,6 +176,28 @@ namespace HostCord.ViewModels
             }
         }
 
+        private string _updateUrl;
+        public string updateUrl
+        {
+            get { return _updateUrl; }
+            set
+            {
+                _updateUrl = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _updateText;
+        public string updateText
+        {
+            get { return _updateText; }
+            set
+            {
+                _updateText = value;
+                OnPropertyChanged();
+            }
+        }
+
         private ObservableCollection<ModulesViewModel> _modulesViewModels = new ObservableCollection<ModulesViewModel>();
         public ObservableCollection<ModulesViewModel> modulesViewModels
         {
@@ -210,6 +233,7 @@ namespace HostCord.ViewModels
         }
 
         public ICommand GenerateCommandsCommand { get; set; }
+        public ICommand CheckVersionCommand { get; set; }
 
         public BotConfigViewModel(ref Bot bot)
         {
@@ -222,13 +246,15 @@ namespace HostCord.ViewModels
             textChannels = 0;
             status = "Disconnected";
             filterWords = "";
-
+            updateUrl = @"/HostCord;component/Images/update.png";
+            updateText = "";
             selectedAction = comboBoxActions[0];
 
             GenerateCommandsCommand = new RelayCommand(GenerateCommands);
+            CheckVersionCommand = new RelayCommand(CheckVersion);
 
             foreach (var module in _bot.GetModules())
-                Application.Current.Dispatcher.BeginInvoke(()
+                System.Windows.Application.Current.Dispatcher.BeginInvoke(()
                     => modulesViewModels.Add(new ModulesViewModel(module.Name)));
 
             _bot.client.MessageReceived += Client_MessageReceived;
@@ -246,6 +272,19 @@ namespace HostCord.ViewModels
             dispatcherTimer.Start();
         }
 
+        private void CheckVersion(object obj)
+        {
+            var github = new GitHubClient(new ProductHeaderValue("HostCord"));
+
+            var releases = github.Repository.Release.GetAll("Nequss", "HostCord").Result;
+
+            if (releases.Count > 0)
+            {
+                var latest = releases[0];
+                Trace.WriteLine($"Latest: {latest.TagName} Named {latest.Name}");
+            }
+        }
+
         private void GenerateCommands(object obj)
         {
             commandsViewModels.Clear();
@@ -254,7 +293,7 @@ namespace HostCord.ViewModels
                 if (module.Name == (string)obj)
                 {
                     foreach (var command in module.Commands)
-                        Application.Current.Dispatcher.BeginInvoke(()
+                        System.Windows.Application.Current.Dispatcher.BeginInvoke(()
                             => commandsViewModels.Add(new CommandsViewModel(command.Name, command.Summary)));
                     return;
                 }
@@ -307,22 +346,29 @@ namespace HostCord.ViewModels
         {
             messages++;
 
-            if (CheckFilters(message.Content))
+            try
             {
-                switch (selectedAction.id)
+                if (CheckFilters(message.Content))
                 {
-                    case 1:
-                        message.DeleteAsync();
-                        break;
-                    case 2:
-                        KickUser(message.Author.Id);
-                        message.DeleteAsync();
-                        break;
-                    case 3:
-                        BanUser(message.Author.Id);
-                        message.DeleteAsync();
-                        break;
+                    switch (selectedAction.id)
+                    {
+                        case 1:
+                            message.DeleteAsync();
+                            break;
+                        case 2:
+                            KickUser(message.Author.Id);
+                            message.DeleteAsync();
+                            break;
+                        case 3:
+                            BanUser(message.Author.Id);
+                            message.DeleteAsync();
+                            break;
+                    }
                 }
+            }
+            catch(Exception ex)
+            {
+
             }
 
             return Task.CompletedTask;

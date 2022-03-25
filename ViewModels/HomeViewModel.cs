@@ -192,7 +192,7 @@ namespace HostCord.ViewModels
             _bot.client.Ready += Client_Ready;
             _bot.client.MessageReceived += Client_MessageReceived;
 
-            botImage = @"~\..\Images\logo.png";
+            botImage = @"/HostCord;component/Images/logo.png";
             botName = "Bot#0000";
             botLatency = "Latency: 0";
             botServers = "Servers: 0";

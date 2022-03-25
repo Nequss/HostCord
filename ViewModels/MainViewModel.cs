@@ -20,6 +20,83 @@ namespace HostCord.ViewModels
 
         Bot bot = new Bot();
 
+        private string _powerUrl;
+        public string powerUrl
+        {
+            get { return _powerUrl; }
+            set
+            {
+                _powerUrl = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _homeUrl;
+        public string homeUrl
+        {
+            get { return _homeUrl; }
+            set
+            {
+                _homeUrl = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _modulesUrl;
+        public string modulesUrl
+        {
+            get { return _modulesUrl; }
+            set
+            {
+                _modulesUrl = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _settingsUrl;
+        public string settingsUrl
+        {
+            get { return _settingsUrl; }
+            set
+            {
+                _settingsUrl = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _logsUrl;
+        public string logsUrl
+        {
+            get { return _logsUrl; }
+            set
+            {
+                _logsUrl = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _helpUrl;
+        public string helpUrl
+        {
+            get { return _helpUrl; }
+            set
+            {
+                _helpUrl = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _exitUrl;
+        public string exitUrl
+        {
+            get { return _exitUrl; }
+            set
+            {
+                _exitUrl = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ICommand SwitchPowerCommand { get; set; }
         public ICommand SwitchHomeCommand { get; set; }
         public ICommand SwitchModulesCommand { get; set; }
@@ -29,15 +106,23 @@ namespace HostCord.ViewModels
 
         public MainViewModel()
         {
-            botConfigViewModel = new BotConfigViewModel(ref bot);
-            
             PerformanceMonitor.getInstance().start();
 
-            homePage = new Home(ref bot);
-            modulesPage = new Modules(ref botConfigViewModel);
+            powerUrl    = @"/HostCord;component/Images/power.png";
+            homeUrl     = @"/HostCord;component/Images/home.png";
+            modulesUrl  = @"/HostCord;component/Images/extension.png";
+            settingsUrl = @"/HostCord;component/Images/config.png";
+            logsUrl     = @"/HostCord;component/Images/logs.png";
+            helpUrl     = @"/HostCord;component/Images/info.png";
+            exitUrl     = @"/HostCord;component/Images/exit.png";
+
+            botConfigViewModel = new BotConfigViewModel(ref bot);
+            
+            homePage     = new Home(ref bot);
+            modulesPage  = new Modules(ref botConfigViewModel);
             settingsPage = new Settings(ref botConfigViewModel);
-            logsPage = new Logs(ref bot);
-            helpPage = new Help();
+            logsPage     = new Logs(ref bot);
+            helpPage     = new Help();
 
             activeFrameContent = homePage;
 

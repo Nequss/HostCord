@@ -96,7 +96,7 @@
                                 HorizontalAlignment="Center" 
                                 VerticalAlignment="Center">
 
-                            <Border Margin="3" CornerRadius="30">
+                            <Border Margin="3" CornerRadius="30" RenderOptions.BitmapScalingMode="Fant">
                                 <Border.Background>
                                     <ImageBrush Stretch="Fill" ImageSource="{Binding url}"/>
                                 </Border.Background>
@@ -197,9 +197,9 @@
 
                         <StackPanel Orientation="Horizontal">
 
-                            <Border Height="40" Width="40" CornerRadius="30">
+                            <Border Height="40" Width="40" CornerRadius="30" RenderOptions.BitmapScalingMode="Fant">
                                 <Border.Background>
-                                    <ImageBrush Stretch="Fill" ImageSource="{Binding userUrl}"/>
+                                    <ImageBrush Stretch="Fill" ImageSource="{Binding userUrl}" RenderOptions.BitmapScalingMode="Fant"/>
                                 </Border.Background>
                             </Border>
 
@@ -229,7 +229,7 @@
         </ScrollViewer>
 
         <StackPanel Orientation="Vertical" Background="#FF2F3136" Grid.Column="3">
-            <Border Margin="0,20,0,20" Height="100" Width="100" CornerRadius="50">
+            <Border Margin="0,20,0,20" Height="100" Width="100" CornerRadius="50" RenderOptions.BitmapScalingMode="Fant">
                 <Border.Background>
                     <ImageBrush Stretch="Fill" ImageSource="{Binding botImage}"/>
                 </Border.Background>
