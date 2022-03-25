@@ -8,7 +8,323 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Help">
 
-    <Grid>
-        <Label Content="Help Page" HorizontalAlignment="Center" FontSize="50" Foreground="White"/>
+    <Grid Background="#FF2F3136">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50*"/>
+            <ColumnDefinition Width="50*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
+        </Grid.RowDefinitions>
+
+        <Border BorderBrush="#FF40444B"
+                BorderThickness="1"
+                Grid.Column="0"
+                Grid.Row="0"
+                Margin="5">
+            
+            <StackPanel Orientation="Vertical">
+
+                <Grid>
+                    <Label Content="Creating your own Discord Bot"
+                           FontSize="20"
+                           Foreground="White"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+                
+                <Rectangle Fill="#FF40444B"
+                           Height="1"
+                           Margin="10,5,10,0"/>
+                
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="55*"/>
+                        <ColumnDefinition Width="30*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Make sure you're logged on to the "
+                               Foreground="White"
+                               Grid.Column="0"
+                               HorizontalAlignment="Right"
+                               Margin="0,5,0,5"/>
+                    <TextBlock Grid.Column="1"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Left"
+                               Margin="0,5,0,5">           
+                        <Hyperlink NavigateUri="https://discord.com/developers/applications" 
+                                   RequestNavigate="Hyperlink_DiscordWebsite"
+                                   Foreground="White">Discord website</Hyperlink>
+                    </TextBlock>
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50*"/>
+                        <ColumnDefinition Width="50*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Content="Navigate to the"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Right"/>
+                    <TextBlock Grid.Column="1"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Left">           
+                        <Hyperlink NavigateUri="https://discord.com/developers/applications" 
+                                   RequestNavigate="Hyperlink_DiscordApps"
+                                   Foreground="White">Application page</Hyperlink>
+                    </TextBlock>
+                </Grid>
+
+                <Grid>
+                    <Label Content="Click on the New Application button"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+
+                <Grid>
+                    <Label Content="Give the application a name and click Create"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+                
+                <Grid>
+                    <Label Content="Create a Bot User by navigating to the Bot tab and clicking Add Bot"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+
+                <Grid>
+                    <Label Content="Enable Public Bot if you want others to invite your bot"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+
+                <Grid>
+                    <Label Content="Enable Privileged Gateway Intents in Bot tab"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+            </StackPanel>
+            
+        </Border>
+        
+        <Border BorderBrush="#FF40444B"
+                BorderThickness="1"
+                Grid.Column="1"
+                Grid.Row="0"
+                Margin="5">
+            <StackPanel Orientation="Vertical">
+                <Grid>
+                    <Label Content="Configuring your Bot"
+                           FontSize="20"
+                           Foreground="White"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+                
+                <Rectangle Fill="#FF40444B"
+                           Height="1"
+                           Margin="10,5,10,0"/>
+
+                <Grid Margin="0,25,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50*"/>
+                        <ColumnDefinition Width="50*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Content="Navigate to the"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Right"/>
+                    <TextBlock Grid.Column="1"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Left">           
+                        <Hyperlink NavigateUri="https://discord.com/developers/applications" 
+                                   RequestNavigate="Hyperlink_DiscordApps"
+                                   Foreground="White">Application page</Hyperlink>
+                    </TextBlock>
+                </Grid>
+
+                <Grid>
+                    <Label Content="Click on your bot's application"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+                <Grid>
+                    <Label Content="App Icon - Changes also your bot's profile picture"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+                <Grid>
+                    <Label Content="Description - Changes text in the About Me section of your bot's profile"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+                <Grid>
+                    <Label Content="Tags - Describe the content and functionality of your application"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+
+            </StackPanel>
+        </Border>
+        
+        <Border BorderBrush="#FF40444B"
+                BorderThickness="1"
+                Grid.Column="0"
+                Grid.Row="1"
+                Margin="5">
+            
+            <StackPanel Orientation="Vertical">
+                <Grid>
+                    <Label Content="Inviting the Bot"
+                           FontSize="20"
+                           Foreground="White"
+                           HorizontalAlignment="Center"/>
+                    
+                </Grid>
+                
+                <Rectangle Fill="#FF40444B"
+                           Height="1"
+                           Margin="10,5,10,0"/>
+
+                <Grid Margin="0,15,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50*"/>
+                        <ColumnDefinition Width="50*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Content="Navigate to the"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Right"/>
+                    <TextBlock Grid.Column="1"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Left">           
+                        <Hyperlink NavigateUri="https://discord.com/developers/applications" 
+                                   RequestNavigate="Hyperlink_DiscordApps"
+                                   Foreground="White">Application page</Hyperlink>
+                    </TextBlock>
+                </Grid>
+
+                <Grid>
+                    <Label Content="Click on your bot's application"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+                <Grid>
+                    <Label Content="Go to the OAuth2 tab and click URL Generator"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+                <Grid>
+                    <Label Content="Tick the bot checkbox under scopes"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+                <Grid>
+                    <Label Content="Tick the Administrator permissions under Bot Permissions"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+                <Grid>
+                    <Label Content="Copy and paste the URL created below into your browser"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"/>
+                </Grid> 
+            </StackPanel>
+        </Border>
+        
+        <Border BorderBrush="#FF40444B"
+                BorderThickness="1"
+                Grid.Column="1"
+                Grid.Row="1"
+                Margin="5">
+            <StackPanel Orientation="Vertical">
+                <Grid>
+                    <Label Content="Setting up the Hostcord"
+                           FontSize="20"
+                           Foreground="White"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+                
+                <Rectangle Fill="#FF40444B"
+                           Height="1"
+                           Margin="10,5,10,0"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50*"/>
+                        <ColumnDefinition Width="50*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Content="Navigate to the"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Right"/>
+                    <TextBlock Grid.Column="1"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Left">           
+                        <Hyperlink NavigateUri="https://discord.com/developers/applications" 
+                                   RequestNavigate="Hyperlink_DiscordApps"
+                                   Foreground="White">Application page</Hyperlink>
+                    </TextBlock>
+                </Grid>
+                <Grid>
+                    <Label Content="Click on your bot's application"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+                <Grid>
+                    <Label Content="Navigate to the Bot tab and click Reset Token"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+                <Grid>
+                    <Label Content="Copy and paste it to the Token text box in HostCord Settings tab"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+                <Grid>
+                    <Label Content="Set the prefix or leave default in Settings tab"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+                <Grid>
+                    <Label Content="Set Censored words or leave blank Ex. word1,badword,coolword"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+                <Grid>
+                    <Label Content="Set Action for Censored words or leave it default"
+                           Foreground="White"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+
     </Grid>
 </Page>

@@ -9,11 +9,14 @@
       Title="Logs">
 
     <Grid Background="#FF2F3136">
+
+
         <ScrollViewer Name="logsViever"
                       Background="#FF40444B"
-                      Margin="20"
+                      Grid.Row="1"
                       ScrollChanged="ScrollViewer_ScrollChanged"
                       VerticalScrollBarVisibility="Hidden">
+            
             <TextBox Text="{Binding textLog}"
                      Background="Transparent"
                      Foreground="White"

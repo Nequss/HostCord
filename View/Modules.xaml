@@ -91,19 +91,26 @@
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button Command="{Binding DataContext.GenerateCommandsCommand, RelativeSource={RelativeSource AncestorType=Page}}" 
-                                CommandParameter="{Binding moduleName}" 
-                                Style="{DynamicResource SquareStyle}"
-                                Grid.Column="1"
-                                Background="Transparent"
-                                HorizontalContentAlignment ="Stretch">
-                            
-                            <Label Content="{Binding moduleName}"
-                                   HorizontalContentAlignment="Stretch"
-                                   Foreground="White"
-                                   Background="Transparent"
-                                   FontSize="14"/>
-                        </Button>
+                        <Grid>
+                            <Border BorderBrush="#FF40444B"
+                                    BorderThickness="1"
+                                    Grid.Column="0"
+                                    Grid.Row="1"
+                                    Margin="5,5,5,0">
+                                <Button Command="{Binding DataContext.GenerateCommandsCommand, RelativeSource={RelativeSource AncestorType=Page}}" 
+                                        CommandParameter="{Binding moduleName}" 
+                                        Style="{DynamicResource SquareStyle}"
+                                        Grid.Column="1"
+                                        Background="Transparent">
+                                    <TextBlock Text="{Binding moduleDisplayName}"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Foreground="White"
+                                               Background="Transparent"
+                                               FontSize="15"/>
+                                </Button>
+                            </Border>
+                        </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
 
@@ -112,9 +119,10 @@
 
         <ScrollViewer Grid.Column="1" 
                       VerticalScrollBarVisibility="Hidden" 
-                      Background="#FF393C43">
+                      Background="#FF2F3136">
 
-            <ItemsControl ItemsSource="{Binding commandsViewModels}">
+            <ItemsControl ItemsSource="{Binding commandsViewModels}"
+                          Margin="5">
 
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -126,7 +134,7 @@
                     <DataTemplate>
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="11*"/>
+                                <ColumnDefinition Width="12*"/>
                                 <ColumnDefinition Width="50*"/>
                             </Grid.ColumnDefinitions>
                             
@@ -134,17 +142,19 @@
                                    Grid.Column="0"
                                    Foreground="White"
                                    Background="Transparent"
-                                   FontSize="20"
-                                   BorderBrush="#FF2F3136"
-                                   BorderThickness="0,0,0,1"/>
+                                   FontSize="18"                                   
+                                   BorderBrush="#FF40444B"
+                                   BorderThickness="0,0,0,1"
+                                   Margin="5,0,5,0"/>
                             
                             <Label Content="{Binding commandSummary}"
                                    Grid.Column="1"
                                    Foreground="White"
                                    Background="Transparent"
                                    FontSize="15"
-                                   BorderBrush="#FF2F3136"
-                                   BorderThickness="0,0,0,1"/>
+                                   BorderBrush="#FF40444B"
+                                   BorderThickness="0,0,0,1"
+                                   Margin="5,0,5,0"/>
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

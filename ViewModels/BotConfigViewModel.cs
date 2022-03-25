@@ -238,6 +238,7 @@ namespace HostCord.ViewModels
         public BotConfigViewModel(ref Bot bot)
         {
             _bot = bot;
+            _bot.commandHandler.InitializeAsync();
 
             token = "";
             prefix = "+";
@@ -257,6 +258,8 @@ namespace HostCord.ViewModels
                 System.Windows.Application.Current.Dispatcher.BeginInvoke(()
                     => modulesViewModels.Add(new ModulesViewModel(module.Name)));
 
+            GenerateCommands(modulesViewModels[0].moduleName);
+
             _bot.client.MessageReceived += Client_MessageReceived;
             _bot.client.Disconnected    += Client_Disconnected;
             _bot.client.Ready           += Client_Ready;
@@ -275,7 +278,6 @@ namespace HostCord.ViewModels
         private void CheckVersion(object obj)
         {
             var github = new GitHubClient(new ProductHeaderValue("HostCord"));
-
             var releases = github.Repository.Release.GetAll("Nequss", "HostCord").Result;
 
             if (releases.Count > 0)
@@ -294,7 +296,7 @@ namespace HostCord.ViewModels
                 {
                     foreach (var command in module.Commands)
                         System.Windows.Application.Current.Dispatcher.BeginInvoke(()
-                            => commandsViewModels.Add(new CommandsViewModel(command.Name, command.Summary)));
+                            => commandsViewModels.Add(new CommandsViewModel($"{_bot.commandHandler.GetPrefix()}{command.Name}", command.Summary)));
                     return;
                 }
         }

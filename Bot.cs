@@ -37,12 +37,13 @@ namespace HostCord
             commandHandler = services.GetRequiredService<CommandHandlingService>();
         }
 
+        public IEnumerable<ModuleInfo> GetModules()
+            => services.GetRequiredService<CommandService>().Modules;
+
         public async Task MainAsync()
         {
             await client.LoginAsync(TokenType.Bot, token);
             await client.StartAsync();
-
-            await commandHandler.InitializeAsync();
 
             await Task.Delay(-1);
         }
@@ -61,14 +62,6 @@ namespace HostCord
                 .AddSingleton<CommandHandlingService>()
                 .AddSingleton<HttpClient>()
                 .BuildServiceProvider();
-        }
-
-        public IEnumerable<ModuleInfo> GetModules()
-        {
-            var service = services.GetRequiredService<CommandService>();
-            service.AddModulesAsync(Assembly.GetEntryAssembly(), null);
-            var modules = service.Modules;
-            return modules;
         }
     }
 }

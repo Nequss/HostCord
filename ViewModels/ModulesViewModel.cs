@@ -20,6 +20,17 @@ namespace HostCord.ViewModels
             set
             {
                 _moduleName = value;
+                moduleDisplayName = Char.ToUpper(value[0]).ToString() + value.Substring(1) + "\nModule";
+            }
+        }
+
+        private string _moduleDisplayName;
+        public string moduleDisplayName
+        {
+            get { return _moduleDisplayName; }
+            set
+            {
+                _moduleDisplayName = value;
             }
         }
 

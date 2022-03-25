@@ -198,6 +198,7 @@ namespace HostCord.ViewModels
             botServers = "Servers: 0";
             botUptime = "Uptime: 0";
 
+            startDate = DateTime.Now;
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += dispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
@@ -270,11 +271,6 @@ namespace HostCord.ViewModels
 
         private Task Client_Connected()
         {
-            startDate = DateTime.Now;
-            dispatcherTimer.Tick += dispatcherTimer_Tick;
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
-            dispatcherTimer.Start();
-
             botImage = _bot.client.CurrentUser.GetAvatarUrl(Discord.ImageFormat.Png, 256);
             botName = $"{_bot.client.CurrentUser.Username}#{_bot.client.CurrentUser.Discriminator}";
             botServers = "Servers: " + _bot.client.Guilds.Count;
@@ -284,10 +280,10 @@ namespace HostCord.ViewModels
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-             botUptime = "Uptime: " + DateTime.Now.Subtract(startDate).ToString(@"hh\:mm\:ss");
+            botUptime = "Uptime: " + DateTime.Now.Subtract(startDate).ToString(@"hh\:mm\:ss");
 
-             cpuUsage = $"{performanceMonitor.cpuUsage} %";
-             ramUsage = $"{performanceMonitor.ramUsage} MB";
+            cpuUsage = $"{performanceMonitor.cpuUsage} %";
+            ramUsage = $"{performanceMonitor.ramUsage} MB";
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

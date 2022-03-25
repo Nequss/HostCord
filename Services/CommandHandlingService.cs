@@ -37,6 +37,9 @@ namespace HostCord.Services
         public void SetPrefix(string prefix)
             => this.prefix = prefix;
 
+        public string GetPrefix()
+            => prefix;
+
         public async Task MessageReceivedAsync(SocketMessage rawMessage)
         {
             if (!(rawMessage is SocketUserMessage message)) return;

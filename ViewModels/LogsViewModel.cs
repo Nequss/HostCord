@@ -29,6 +29,7 @@ namespace HostCord.ViewModels
         public LogsViewModel(ref Bot bot)
         {
             _bot = bot;
+            textLog = "Logging messages will be shown here...\n";
 
             _bot.client.Log += Client_Log;
             _bot.services.GetRequiredService<CommandService>().Log += CommandService_Log;
