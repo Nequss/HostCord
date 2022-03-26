@@ -8,19 +8,20 @@ public class PerformanceMonitor
 {
     private static PerformanceMonitor instance;
     
-    private Thread monitor;
+    private Thread pcMonitor;
+    private Thread networkMonitor;
     private bool isRunning = false;
     private int pollingIntervalMS;
-    private Process mainProcess;
+    private string processName;
 
     public float cpuUsage { get; private set; } = .0f;
     public float ramUsage { get; private set; } = .0f;
-    
+
     //                         One second by default ↓
-    private PerformanceMonitor(int pollingIntervalS = 1)
+    private PerformanceMonitor(int pollingIntervalS = 2)
     {
-        mainProcess = Process.GetCurrentProcess();
-        monitor = new Thread(getData);
+        processName = getProcessName();
+        pcMonitor = new Thread(getPcData);
         pollingIntervalMS = pollingIntervalS * 1000;
     }
 
@@ -38,7 +39,7 @@ public class PerformanceMonitor
             return;
 
         isRunning = true;
-        monitor.Start();
+        pcMonitor.Start();
     }
 
     public void stop()
@@ -47,32 +48,50 @@ public class PerformanceMonitor
             return;
 
         isRunning = false;
-        Console.WriteLine("Stopping monitor");
-        monitor.Join();
-        Console.WriteLine("Monitor Stopped");
+        pcMonitor.Join();
     }
 
-    private void getData()
+    private void getPcData()
     {
         while (isRunning)
         {
             cpuUsage = (float) Math.Round(getCPUUsage());
             ramUsage = (float) Math.Round(getRAMUsage());
-            Thread.Sleep(pollingIntervalMS / 2);
+            Thread.Sleep(pollingIntervalMS);
         }
     }
 
     private float getCPUUsage()
     {
-        var counter = new PerformanceCounter("Processor", "% Processor Time", "_Total", true);
+        var counter = new PerformanceCounter("Process", "% Processor Time", processName, true);
         counter.NextValue();
-        Thread.Sleep(pollingIntervalMS/2);
-        var sample2 = counter.NextValue();
-        return sample2;
+        Thread.Sleep(pollingIntervalMS);
+        return counter.NextValue();
     }
     
     private float getRAMUsage()
     {
-        return new PerformanceCounter("Process", "Private Bytes", mainProcess.ProcessName).NextValue()/1024/1024;
+        return new PerformanceCounter("Process", "Private Bytes", processName).NextValue()/1024/1024;
+    }
+
+    private string getProcessName()
+    {
+        var process = Process.GetCurrentProcess();
+
+        foreach (var instance in new PerformanceCounterCategory("Process").GetInstanceNames())
+        {
+            if (instance.StartsWith(process.ProcessName))
+            {
+                using (var processId = new PerformanceCounter("Process", "ID Process", instance, true))
+                {
+                    if (process.Id == (int)processId.RawValue)
+                    {
+                        return instance;
+                    }
+                }
+            }
+        }
+
+        return "";
     }
 }

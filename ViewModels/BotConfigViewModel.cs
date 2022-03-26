@@ -21,6 +21,8 @@ using HostCord.Models;
 using HostCord.Utils;
 using System.Windows.Threading;
 using Octokit;
+using System.Threading;
+using System.Net.NetworkInformation;
 
 namespace HostCord.ViewModels
 {
@@ -28,7 +30,8 @@ namespace HostCord.ViewModels
     {
         Bot _bot;
         PerformanceMonitor performanceMonitor = PerformanceMonitor.getInstance();
-        DispatcherTimer dispatcherTimer;
+        DispatcherTimer dispatcherPC;
+        DispatcherTimer dispatcherNetwork;
 
 
         private string _token;
@@ -258,8 +261,6 @@ namespace HostCord.ViewModels
                 System.Windows.Application.Current.Dispatcher.BeginInvoke(()
                     => modulesViewModels.Add(new ModulesViewModel(module.Name)));
 
-            GenerateCommands(modulesViewModels[0].moduleName);
-
             _bot.client.MessageReceived += Client_MessageReceived;
             _bot.client.Disconnected    += Client_Disconnected;
             _bot.client.Ready           += Client_Ready;
@@ -268,11 +269,11 @@ namespace HostCord.ViewModels
             _bot.client.UserJoined      += Client_UserJoined;
             _bot.client.UserLeft        += Client_UserLeft;
             _bot.services.GetRequiredService<CommandService>().CommandExecuted += BotConfigViewModel_CommandExecuted;
-            
-            dispatcherTimer = new DispatcherTimer();
-            dispatcherTimer.Tick += dispatcherTimer_Tick;
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
-            dispatcherTimer.Start();
+
+            dispatcherPC = new DispatcherTimer();
+            dispatcherPC.Tick += dispatcherTimer_Tick;
+            dispatcherPC.Interval = new TimeSpan(0, 0, 1);
+            dispatcherPC.Start();
         }
 
         private void CheckVersion(object obj)
@@ -311,6 +312,9 @@ namespace HostCord.ViewModels
             }
 
             status = "Connected";
+
+            PerformanceMonitor.getInstance().start();
+
             return Task.CompletedTask;
         }
 
