@@ -32,7 +32,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <SolidColorBrush x:Key="ComboBoxNormalBorderBrush" Color="#FF40444B" />
         <SolidColorBrush x:Key="ComboBoxNormalBackgroundBrush" Color="#FF40444B" />
         <SolidColorBrush x:Key="ComboBoxDisabledForegroundBrush" Color="#FF40444B" />
@@ -174,7 +174,7 @@
     </Page.Resources>
 
     <Grid Background="#FF2F3136">
-        
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50*"/>
             <ColumnDefinition Width="50*"/>
@@ -183,7 +183,7 @@
         <StackPanel Orientation="Vertical"
                     Grid.Column="0"
                     Margin="5">
-            
+
             <Label Content="Token"
                    Foreground="White"
                    FontSize="15"/>
@@ -193,7 +193,7 @@
                      Background="#FF40444B"
                      Height="25"
                      BorderThickness="0"/>
-            
+
             <Label Content="Prefix"
                    Foreground="White"
                    FontSize="15"/>
@@ -333,18 +333,19 @@
                                Grid.Column="1"/>
                         </Grid>
 
+
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="50*"/>
                                 <ColumnDefinition Width="50*"/>
                             </Grid.ColumnDefinitions>
 
-                            <Label Content="Status:"
+                            <Label Content="Modules:"
                                Foreground="White"
                                Grid.Column="0"
                                HorizontalAlignment="Right"/>
 
-                            <Label Content="{Binding status}"
+                            <Label Content="{Binding modules}"
                                Foreground="White"
                                Grid.Column="1"/>
                         </Grid>
@@ -393,21 +394,22 @@
                     <Rectangle Fill="#FF40444B"
                            Height="1"/>
 
-                    <Label Content="Network Usage"
+                    <Label Content="Bot Network"
                            Foreground="White"/>
 
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="50*"/>
-                            <ColumnDefinition Width="50*"/>
+                            <ColumnDefinition Width="7*"/>
+                            <ColumnDefinition Width="86*"/>
+                            <ColumnDefinition Width="93*"/>
                         </Grid.ColumnDefinitions>
 
-                        <Label Content="Bytes sent:"
+                        <Label Content="Latency:"
                                Foreground="White"
-                               Grid.Column="0"
+                               Grid.Column="1"
                                HorizontalAlignment="Right"/>
 
-                        <Label Content="{Binding bytesSent}"
+                        <Label Content="{Binding latency}"
                                Foreground="White"
                                Grid.Column="1"/>
                     </Grid>
@@ -418,12 +420,12 @@
                             <ColumnDefinition Width="50*"/>
                         </Grid.ColumnDefinitions>
 
-                        <Label Content="Bytes received:"
+                        <Label Content="Status:"
                                Foreground="White"
                                Grid.Column="0"
                                HorizontalAlignment="Right"/>
 
-                        <Label Content="{Binding bytesReceived}"
+                        <Label Content="{Binding status}"
                                Foreground="White"
                                Grid.Column="1"/>
                     </Grid>
@@ -440,9 +442,9 @@
                            Foreground="White"
                            Grid.Column="0"
                            HorizontalAlignment="Center"/>
-                   
+
                 </Grid>
-                
+
                 <Grid>
                     <TextBlock Text="If you have encountered any problems while using the application or you want to share your ideas for more features please contact the app developer using one of the available options below"
                                TextWrapping="Wrap"
@@ -515,7 +517,7 @@
                            HorizontalAlignment="Center"/>
 
                     </Grid>
-                    
+
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="50*"/>
@@ -535,7 +537,7 @@
                                 <ColumnDefinition Width="50*"/>
                                 <ColumnDefinition Width="50*"/>
                             </Grid.ColumnDefinitions>
-                            
+
                             <Label Content="Version:"
                                Foreground="White"
                                Grid.Column="0"
@@ -583,7 +585,7 @@
                                        HorizontalAlignment="Left"/>
                         </Grid>
                     </Grid>
-                    
+
                     <Rectangle Fill="#FF40444B"
                            Height="1"
                            Margin="0,5,0,5"/>
@@ -613,7 +615,7 @@
                                    Source="{Binding updateUrl}"
                                    RenderOptions.BitmapScalingMode="Fant"/>
                         </Button>
-                        
+
                     </Grid>
                 </StackPanel>
             </StackPanel>

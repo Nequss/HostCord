@@ -9,7 +9,6 @@ public class PerformanceMonitor
     private static PerformanceMonitor instance;
     
     private Thread pcMonitor;
-    private Thread networkMonitor;
     private bool isRunning = false;
     private int pollingIntervalMS;
     private string processName;
@@ -17,7 +16,7 @@ public class PerformanceMonitor
     public float cpuUsage { get; private set; } = .0f;
     public float ramUsage { get; private set; } = .0f;
 
-    //                         One second by default ↓
+    //                         Two seconds by default ↓
     private PerformanceMonitor(int pollingIntervalS = 2)
     {
         processName = getProcessName();

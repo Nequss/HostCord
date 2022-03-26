@@ -31,8 +31,6 @@ namespace HostCord.ViewModels
         Bot _bot;
         PerformanceMonitor performanceMonitor = PerformanceMonitor.getInstance();
         DispatcherTimer dispatcherPC;
-        DispatcherTimer dispatcherNetwork;
-
 
         private string _token;
         public string token
@@ -201,6 +199,28 @@ namespace HostCord.ViewModels
             }
         }
 
+        private string _latency;
+        public string latency
+        {
+            get { return _latency; }
+            set
+            {
+                _latency = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _modules;
+        public string modules
+        {
+            get { return _modules; }
+            set
+            {
+                _modules = value;
+                OnPropertyChanged();
+            }
+        }
+
         private ObservableCollection<ModulesViewModel> _modulesViewModels = new ObservableCollection<ModulesViewModel>();
         public ObservableCollection<ModulesViewModel> modulesViewModels
         {
@@ -253,9 +273,11 @@ namespace HostCord.ViewModels
             updateUrl = @"/HostCord;component/Images/update.png";
             updateText = "";
             selectedAction = comboBoxActions[0];
+            latency = "0";
+            modules = _bot.GetModules().Count() + "";
 
             GenerateCommandsCommand = new RelayCommand(GenerateCommands);
-            CheckVersionCommand = new RelayCommand(CheckVersion);
+            CheckVersionCommand     = new RelayCommand(CheckVersion);
 
             foreach (var module in _bot.GetModules())
                 System.Windows.Application.Current.Dispatcher.BeginInvoke(()
@@ -268,6 +290,7 @@ namespace HostCord.ViewModels
             _bot.client.LeftGuild       += Client_LeftGuild;
             _bot.client.UserJoined      += Client_UserJoined;
             _bot.client.UserLeft        += Client_UserLeft;
+            _bot.client.LatencyUpdated  += Client_LatencyUpdated;
             _bot.services.GetRequiredService<CommandService>().CommandExecuted += BotConfigViewModel_CommandExecuted;
 
             dispatcherPC = new DispatcherTimer();
@@ -301,6 +324,13 @@ namespace HostCord.ViewModels
                     return;
                 }
         }
+
+        private Task Client_LatencyUpdated(int arg1, int arg2)
+        {
+            latency = _bot.client.Latency + "";
+            return Task.CompletedTask;
+        }
+
         private Task Client_Ready()
         {
             servers = _bot.client.Guilds.Count;
@@ -390,7 +420,7 @@ namespace HostCord.ViewModels
         {
             foreach (string word in message.Split(" "))
                 foreach (string filter in filterWords.Split(","))
-                    if (word == filter)
+                    if (word.ToLower() == filter.ToLower())
                         return true;
 
             return false;
