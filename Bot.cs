@@ -53,6 +53,8 @@ namespace HostCord
             return new ServiceCollection()
                 .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
                 {
+                    AlwaysDownloadUsers = true,
+                    GatewayIntents = GatewayIntents.All,
                     LogLevel = LogSeverity.Debug
                 }))
                 .AddSingleton(new CommandService(new CommandServiceConfig

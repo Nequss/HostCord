@@ -18,6 +18,7 @@ using Discord.WebSocket;
 using System.Threading;
 using Discord;
 using HostCord.Utils;
+using HostCord.Models;
 
 namespace HostCord.ViewModels
 {
@@ -28,33 +29,45 @@ namespace HostCord.ViewModels
         DispatcherTimer dispatcherTimer;
         PerformanceMonitor performanceMonitor = PerformanceMonitor.getInstance();
 
+        private ObservableCollection<ServersViewModel> _serversViewModels;
         public ObservableCollection<ServersViewModel> serversViewModels
         {
             get { return _serversViewModels; }
+            set { _serversViewModels = value; }
         }
 
-        private ObservableCollection<ServersViewModel> _serversViewModels = new ObservableCollection<ServersViewModel>();
+        private ObservableCollection<ChannelsViewModel> _channelsViewModels;
 
         public ObservableCollection<ChannelsViewModel> channelsViewModels
         {
             get { return _channelsViewModels; }
+            set { _channelsViewModels = value; }
         }
 
-        private ObservableCollection<ChannelsViewModel> _channelsViewModels = new ObservableCollection<ChannelsViewModel>();
-
+        private ObservableCollection<MessagesViewModel> _messagesViewModels;
         public ObservableCollection<MessagesViewModel> messagesViewModels
         {
             get { return _messagesViewModels; }
+            set { _messagesViewModels = value; }
         }
 
-        private ObservableCollection<MessagesViewModel> _messagesViewModels = new ObservableCollection<MessagesViewModel>();
-
+        private ObservableCollection<TextBoxViewModel> _textBoxViewModels;
         public ObservableCollection<TextBoxViewModel> textBoxViewModels
         {
             get { return _textBoxViewModels; }
+            set { _textBoxViewModels = value; }
         }
 
-        private ObservableCollection<TextBoxViewModel> _textBoxViewModels = new ObservableCollection<TextBoxViewModel>();
+        private string _mailImage;
+        public string mailImage
+        {
+            get { return _mailImage; }
+            set
+            {
+                _mailImage = value;
+                OnPropertyChanged();
+            }
+        }
 
         private string _botImage;
         public string botImage
@@ -144,6 +157,17 @@ namespace HostCord.ViewModels
             }
         }
 
+        private SocketDMChannel _activeDM;
+        public SocketDMChannel activeDM
+        {
+            get { return _activeDM; }
+            set
+            {
+                _activeDM = value;
+                activeChannelName = $"@ {value.Recipient.Username} | {value.Recipient.Status}";
+            }
+        }
+
 
         private string _activeChannelName;
         public string activeChannelName
@@ -157,10 +181,149 @@ namespace HostCord.ViewModels
         }
 
         public ICommand SetActiveChannelCommand { get; set; }
+        public ICommand GenerateChannelsCommand { get; set; }
+        public ICommand GenerateDMsCommand { get; set; }
+
+        public HomeViewModel(ref Bot bot)
+        {
+            _bot = bot;
+            _bot.client.Connected += Client_Connected;
+            _bot.client.LatencyUpdated += Client_LatencyUpdated;
+            _bot.client.Ready += Client_Ready;
+            _bot.client.MessageReceived += Client_MessageReceived;
+
+            mailImage  = @"/HostCord;component/Images/mail.png";
+            botImage   = @"/HostCord;component/Images/logo.png";
+            botName    = "HostCord#0000";
+            botLatency = "Latency: 0";
+            botServers = "Servers: 0";
+            botUptime  = "Uptime: 0";
+            activeChannelName = "# Default channel name | Channel description";
+
+            //GenerateDMsCommand = new RelayCommand(GenerateDMs);
+
+
+            serversViewModels = new ObservableCollection<ServersViewModel>()
+            { 
+                new ServersViewModel(0, botImage, "Default Server"),
+            };
+
+            channelsViewModels = new ObservableCollection<ChannelsViewModel>()
+            {
+                new ChannelsViewModel(0, "", 0, "# Default text channel"),
+
+            };
+
+            messagesViewModels = new ObservableCollection<MessagesViewModel>()
+            {
+                new MessagesViewModel(botImage, "HostCord", DateTime.Now.ToString(@"hh\:mm"), "Welcome to the HostCord!", ""),
+                new MessagesViewModel(botImage, "HostCord", DateTime.Now.ToString(@"hh\:mm"), "This is the Home Page\nYou can read messages from different servers and chat as a bot here", ""),
+                new MessagesViewModel(botImage, "HostCord", DateTime.Now.ToString(@"hh\:mm"), "If you are completely new to discord bots, please visit Help Page", ""),
+                new MessagesViewModel(botImage, "HostCord", DateTime.Now.ToString(@"hh\:mm"), "You will find there all needed information", ""),
+                new MessagesViewModel(botImage, "HostCord", DateTime.Now.ToString(@"hh\:mm"), "In order to simply start your bot you only need the token", ""),
+                new MessagesViewModel(botImage, "HostCord", DateTime.Now.ToString(@"hh\:mm"), "Copy and paste the bot's token to the Settings Page", ""),
+            };
+
+            textBoxViewModels = new ObservableCollection<TextBoxViewModel>()
+            {
+                new TextBoxViewModel(ref _bot, "", 0)
+            };
+
+            startDate = DateTime.Now;
+            dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += dispatcherTimer_Tick;
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+            dispatcherTimer.Start();
+        }
+
+        /*
+        private void GenerateDMs(object obj)
+        {
+            Application.Current.Dispatcher.BeginInvoke(()
+                => channelsViewModels.Clear());
+
+            try
+            {
+                foreach (SocketGuild guild in _bot.client.Guilds)
+                {
+                    foreach (SocketGuildUser user in guild.Users)
+                    {
+                        var channel = user.CreateDMChannelAsync().Result;
+
+                        var messages = channel.GetMessagesAsync(100).Flatten().Reverse();
+
+                        if(messages.CountAsync().Result > 0)
+                            Application.Current.Dispatcher.BeginInvoke(()
+                                => channelsViewModels.Add(new ChannelsViewModel(0, "", user.Id, user.Username)));
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Trace.WriteLine($"ex: {ex}");
+            }
+
+            SetMessagesDM(channelsViewModels.First().channelId);
+        }
+
+        private async Task SetMessagesDM(ulong id)
+        {
+            await Application.Current.Dispatcher.BeginInvoke(()
+                => messagesViewModels.Clear());
+
+            var user = await _bot.client.GetUserAsync(id);
+
+            try 
+            {
+                var channel = await user.CreateDMChannelAsync();
+    
+                var messages = channel.GetMessagesAsync(100).Flatten().Reverse();
+    
+                await foreach (var message in messages)
+                {
+                    await Application.Current.Dispatcher.BeginInvoke(()
+                        => messagesViewModels.Add(new MessagesViewModel(
+                            message.Author.GetAvatarUrl(ImageFormat.Jpeg, 128),
+                            message.Author.Username,
+                            message.Timestamp.LocalDateTime.ToString(),
+                            message.Content,
+                            GetImageUrl(message))));
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"ex: {ex}");
+            }
+        }
+        */
+
+        private void GenerateChannels(object obj)
+        {
+            SetActiveChannelCommand = new RelayCommand(SetActiveChannel);
+
+            Application.Current.Dispatcher.BeginInvoke(()
+                => channelsViewModels.Clear());
+
+            foreach (SocketGuild guild in _bot.client.Guilds)
+            {
+                if (guild.Name == obj as string)
+                {
+                    foreach (SocketTextChannel channel in guild.TextChannels)
+                        Application.Current.Dispatcher.BeginInvoke(()
+                            => channelsViewModels.Add(new ChannelsViewModel(guild.Id, guild.Name, channel.Id, "# " + channel.Name)));
+
+                    SetActiveChannel(guild.DefaultChannel.Id);
+
+                    return;
+                }
+            }
+        }
 
         private void SetActiveChannel(object obj)
         {
-            messagesViewModels.Clear();
+            Application.Current.Dispatcher.BeginInvoke(()
+                => messagesViewModels.Clear());
+
             activeChannel = (SocketTextChannel)_bot.client.GetChannel((ulong)obj);
 
             if (textBoxViewModels.Any())
@@ -175,34 +338,51 @@ namespace HostCord.ViewModels
 
             await foreach (var message in messages)
             {
+
                 await Application.Current.Dispatcher.BeginInvoke(()
                     => messagesViewModels.Add(new MessagesViewModel(
                         message.Author.GetAvatarUrl(ImageFormat.Jpeg, 128),
                         message.Author.Username,
-                        message.Timestamp.ToString(),
-                        message.Content)));
+                        message.Timestamp.LocalDateTime.ToString(),
+                        message.Content,
+                        GetImageUrl(message))));
             }
         }
 
-        public HomeViewModel(ref Bot bot)
+        private string GetImageUrl(IMessage message)
         {
-            _bot = bot;
-            _bot.client.Connected += Client_Connected;
-            _bot.client.LatencyUpdated += Client_LatencyUpdated;
-            _bot.client.Ready += Client_Ready;
-            _bot.client.MessageReceived += Client_MessageReceived;
+            if (message.Attachments.Count != 0)
+            {
+                var image = message.Attachments.Where(x =>
+                x.Filename.EndsWith(".jpg") || x.Filename.EndsWith(".png") ||
+                x.Filename.EndsWith(".gif") || x.Filename.EndsWith(".bmp") ||
+                x.Filename.EndsWith(".jpeg"));
 
-            botImage = @"/HostCord;component/Images/logo.png";
-            botName = "Bot#0000";
-            botLatency = "Latency: 0";
-            botServers = "Servers: 0";
-            botUptime = "Uptime: 0";
+                if (image.Any())
+                    return image.First().Url;
+            }
 
-            startDate = DateTime.Now;
-            dispatcherTimer = new DispatcherTimer();
-            dispatcherTimer.Tick += dispatcherTimer_Tick;
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
-            dispatcherTimer.Start();
+            return "";
+        }
+
+        private Task Client_Ready()
+        {
+            Application.Current.Dispatcher.BeginInvoke(() 
+                => serversViewModels.Clear());
+
+            GenerateChannelsCommand = new RelayCommand(GenerateChannels);
+
+            foreach (SocketGuild guild in _bot.client.Guilds)
+                Application.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    serversViewModels.Add(new ServersViewModel(guild.Id, guild.IconUrl, guild.Name));
+
+                 });
+
+
+            GenerateChannels(_bot.client.Guilds.First().Name);
+
+            return Task.CompletedTask;
         }
 
         private Task Client_MessageReceived(SocketMessage message)
@@ -216,50 +396,12 @@ namespace HostCord.ViewModels
                     => messagesViewModels.Add(new MessagesViewModel(
                         message.Author.GetAvatarUrl(),
                         message.Author.Username,
-                        message.Timestamp.ToString(),
-                        message.Content)));
+                        message.Timestamp.LocalDateTime.ToString(),
+                        message.Content,
+                        GetImageUrl(message))));
             }
 
             return Task.CompletedTask;
-        }
-
-        private Task Client_Ready()
-        {
-            GenerateChannelsCommand = new RelayCommand(GenerateChannels);
-
-            foreach (SocketGuild guild in _bot.client.Guilds)
-                Application.Current.Dispatcher.BeginInvoke(() 
-                    => serversViewModels.Add(new ServersViewModel(guild.IconUrl, guild.Name)));
-
-            return Task.CompletedTask;
-        }
-
-        public ICommand GenerateChannelsCommand { get; set; }
-
-        private void GenerateChannels(object obj)
-        {
-            SetActiveChannelCommand = new RelayCommand(SetActiveChannel);
-
-            _channelsViewModels.Clear();
-
-            foreach (SocketGuild guild in _bot.client.Guilds)
-            {
-                if (guild.Name == obj as string)
-                {
-                    foreach (SocketTextChannel channel in guild.TextChannels)
-                        Application.Current.Dispatcher.BeginInvoke(()
-                            => channelsViewModels.Add(new ChannelsViewModel(guild.Id, guild.Name, channel.Id, "# " + channel.Name)));
-
-                    if (!textBoxViewModels.Any())
-                        Application.Current.Dispatcher.BeginInvoke(()
-                            => textBoxViewModels.Add(new TextBoxViewModel(ref _bot, "", activeChannel.Id)));
-
-
-                    SetActiveChannel(guild.DefaultChannel.Id);
-
-                    return;
-                }
-            }
         }
 
         private Task Client_LatencyUpdated(int arg1, int arg2)
@@ -282,8 +424,8 @@ namespace HostCord.ViewModels
         {
             botUptime = "Uptime: " + DateTime.Now.Subtract(startDate).ToString(@"hh\:mm\:ss");
 
-            cpuUsage = $"{performanceMonitor.cpuUsage} %";
-            ramUsage = $"{performanceMonitor.ramUsage} MB";
+            cpuUsage = $" CPU: {performanceMonitor.cpuUsage} %";
+            ramUsage = $"RAM: {performanceMonitor.ramUsage} MB";
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

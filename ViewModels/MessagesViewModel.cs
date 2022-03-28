@@ -48,12 +48,23 @@ namespace HostCord.ViewModels
             }
         }
 
-        public MessagesViewModel(string userUrl, string sender, string time, string messageContent)
+        private string _messageImageUrl;
+        public string messageImageUrl
+        {
+            get { return _messageImageUrl; }
+            set
+            {
+                _messageImageUrl = value;
+            }
+        }
+
+        public MessagesViewModel(string userUrl, string sender, string time, string messageContent, string messageImageUrl)
         {
             this.userUrl = userUrl;
             this.sender = sender;
             this.time = time;
             this.messageContent = messageContent;
+            this.messageImageUrl = messageImageUrl;
         }
     }
 }

@@ -21,28 +21,30 @@ namespace HostCord.ViewModels
 {
     public class ServersViewModel
     {
+        private ulong _serverID;
+        public ulong serverID
+        {
+            get { return _serverID; }
+            set { _serverID = value; }
+        }
+
         private string _url;
         public string url
         {
             get { return _url; }
-            set
-            {
-                _url = value;
-            }
+            set { _url = value; }
         }
 
         private string _name;
         public string name
         {
             get { return _name; }
-            set
-            {
-                _name = value;
-            }
+            set { _name = value; }
         }
 
-        public ServersViewModel(string url, string name)
+        public ServersViewModel(ulong serverID, string url, string name)
         {
+            this.serverID = serverID;
             this.url = url;
             this.name = name;
         }

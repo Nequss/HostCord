@@ -404,7 +404,7 @@ namespace HostCord.ViewModels
             }
             catch(Exception ex)
             {
-
+                Trace.WriteLine("filters error");
             }
 
             return Task.CompletedTask;

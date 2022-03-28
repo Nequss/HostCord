@@ -50,7 +50,7 @@
 
         <StackPanel Orientation="Vertical"
                     Grid.Row="2">
-            
+
             <Button Command="{Binding SwitchPowerCommand}"
                     Style="{StaticResource RoundedStyle}" 
                     BorderThickness="0"
@@ -61,7 +61,7 @@
                        Source="{Binding powerUrl}" 
                        RenderOptions.BitmapScalingMode="Fant"/>
             </Button>
-            
+
             <Button Command="{Binding SwitchHomeCommand}"
                     Style="{StaticResource RoundedStyle}"
                     BorderThickness="0"

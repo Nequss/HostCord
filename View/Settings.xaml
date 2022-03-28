@@ -399,14 +399,13 @@
 
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="7*"/>
-                            <ColumnDefinition Width="86*"/>
-                            <ColumnDefinition Width="93*"/>
+                            <ColumnDefinition Width="50*"/>
+                            <ColumnDefinition Width="50*"/>
                         </Grid.ColumnDefinitions>
 
                         <Label Content="Latency:"
                                Foreground="White"
-                               Grid.Column="1"
+                               Grid.Column="0"
                                HorizontalAlignment="Right"/>
 
                         <Label Content="{Binding latency}"

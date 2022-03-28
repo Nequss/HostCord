@@ -68,46 +68,86 @@
     </Page.Resources>
     
     <Grid>
-        
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="7.2*"/>
             <ColumnDefinition Width="20*"/>
             <ColumnDefinition Width="50*"/>
             <ColumnDefinition Width="20*"/>
         </Grid.ColumnDefinitions>
-        
-        <ScrollViewer Background="#FF202225" Grid.Column="0" VerticalScrollBarVisibility="Hidden">
-            <ItemsControl ItemsSource="{Binding serversViewModels}">
 
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Vertical"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
+        <StackPanel Orientation="Vertical"  
+                    Grid.Column="0">
+            <Button Command="{Binding GenerateDMsCommand}"
+                    Style="{DynamicResource RoundedStyle}" 
+                    Height="50" 
+                    Width="50"
+                    Margin="5,5,5,5"                                   
+                    ToolTipService.InitialShowDelay="100">
 
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button Command="{Binding DataContext.GenerateChannelsCommand, RelativeSource={RelativeSource AncestorType=Page}}" 
-                                CommandParameter="{Binding name}" 
-                                Style="{DynamicResource RoundedStyle}" 
-                                Height="50" 
-                                Width="50"
-                                Margin="5,5,5,0"
-                                HorizontalAlignment="Center" 
-                                VerticalAlignment="Center">
+                <Button.ToolTip>
+                    <ToolTip Content="Direct Messages"/>
+                </Button.ToolTip>
 
-                            <Border Margin="3" CornerRadius="30" RenderOptions.BitmapScalingMode="Fant">
-                                <Border.Background>
-                                    <ImageBrush Stretch="Fill" ImageSource="{Binding url}"/>
-                                </Border.Background>
-                            </Border>
+                <Border Margin="3"
+                        CornerRadius="30"
+                        RenderOptions.BitmapScalingMode="Fant">
+                   
+                    <Border.Background>
+                        <ImageBrush Stretch="Fill" 
+                                    ImageSource="{Binding mailImage}"/>
+                    </Border.Background>
+                </Border>
+            </Button>
 
-                        </Button>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
+            <Rectangle Fill="#FF40444B"
+                       Height="1"
+                       Margin="10,0,10,0"/>
+            
+            <ScrollViewer VerticalScrollBarVisibility="Hidden">
 
-            </ItemsControl>
-        </ScrollViewer>
+                <ItemsControl ItemsSource="{Binding serversViewModels}">
+
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+
+                            <Button Command="{Binding DataContext.GenerateChannelsCommand, RelativeSource={RelativeSource AncestorType=Page}}" 
+                                    CommandParameter="{Binding name}" 
+                                    Style="{DynamicResource RoundedStyle}" 
+                                    Height="50" 
+                                    Width="50"
+                                    Margin="5,5,5,0"
+                                    HorizontalAlignment="Center" 
+                                    VerticalAlignment="Center"
+                                    ToolTipService.InitialShowDelay="100">
+
+                                <Button.ToolTip>
+                                    <ToolTip Content="{Binding name}"/>
+                                </Button.ToolTip>
+
+                                <Border Margin="3"
+                                        CornerRadius="30"
+                                        RenderOptions.BitmapScalingMode="Fant">
+                                    <Border.Background>
+                                        <ImageBrush Stretch="Fill" 
+                                                    ImageSource="{Binding url}"/>
+                                    </Border.Background>
+                                </Border>
+                            </Button>
+                            
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+
+                </ItemsControl>
+            </ScrollViewer>
+        </StackPanel>
+
 
         <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Hidden" Background="#FF2F3136">
             <ItemsControl ItemsSource="{Binding channelsViewModels}">
@@ -195,52 +235,92 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
 
-                        <StackPanel Orientation="Horizontal">
+                        <Grid Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="12*"/>
+                                <ColumnDefinition Width="88*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="12*"/>
+                                <RowDefinition Height="88*"/>
+                            </Grid.RowDefinitions>
 
-                            <Border Height="40" Width="40" CornerRadius="30" RenderOptions.BitmapScalingMode="Fant">
+                            <Border Height="40"
+                                    Width="40" 
+                                    Grid.Column="0"
+                                    Grid.Row="0"
+                                    CornerRadius="30" 
+                                    VerticalAlignment="Top"
+                                    RenderOptions.BitmapScalingMode="Fant">
                                 <Border.Background>
-                                    <ImageBrush Stretch="Fill" ImageSource="{Binding userUrl}" RenderOptions.BitmapScalingMode="Fant"/>
+                                    <ImageBrush Stretch="Fill"
+                                                ImageSource="{Binding userUrl}"
+                                                RenderOptions.BitmapScalingMode="Fant"/>
                                 </Border.Background>
                             </Border>
 
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel Orientation="Horizontal">
-                                    <Label Content="{Binding sender}"
-                                           Foreground="White"
-                                           Background="Transparent"
-                                           FontSize="15"/>
-                                    <Label Content="{Binding time}"
-                                           Margin="0,4,0,0"
-                                           Foreground="DarkGray"
-                                           Background="Transparent"
-                                           FontSize="10"/>
-                                </StackPanel>
-                                <Label Content="{Binding messageContent}"
-                                       Margin="0,-10,0,0"
-                                       Foreground="White"
-                                       Background="Transparent"
-                                       FontSize="15"/>
-                            </StackPanel>
-                        </StackPanel>
+                            <StackPanel Orientation="Vertical"
+                                        Grid.Column="1">
 
+                                <StackPanel Orientation="Horizontal">
+
+                                    <TextBox Text="{Binding sender}"
+                                         BorderThickness="0"
+                                         Foreground="White"
+                                         Background="Transparent"
+                                         FontSize="15"/>
+
+                                    <TextBox Text="{Binding time}"
+                                         BorderThickness="0"
+                                         Margin="0,4,0,0"
+                                         Foreground="DarkGray"
+                                         Background="Transparent"
+                                         FontSize="10"/>
+
+                                </StackPanel>
+
+                                <TextBox Text="{Binding messageContent}"
+                                     BorderThickness="0"
+                                     TextWrapping="Wrap"
+                                     Margin="0,0,0,0"
+                                     Foreground="White"
+                                     Background="Transparent"
+                                     FontSize="15"/>
+                                
+                                <Image Source="{Binding messageImageUrl}"
+                                       MaxHeight="310"
+                                       MaxWidth="310"
+                                       HorizontalAlignment="Left"
+                                       RenderOptions.BitmapScalingMode="Fant"/>
+
+                            </StackPanel>
+                        </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
 
-        <StackPanel Orientation="Vertical" Background="#FF2F3136" Grid.Column="3">
-            <Border Margin="0,20,0,20" Height="100" Width="100" CornerRadius="50" RenderOptions.BitmapScalingMode="Fant">
+        <StackPanel Orientation="Vertical" 
+                    Background="#FF2F3136"
+                    Grid.Column="3">
+            <Border Margin="0,20,0,20" 
+                    Height="100" 
+                    Width="100" 
+                    CornerRadius="50" 
+                    RenderOptions.BitmapScalingMode="Fant">
                 <Border.Background>
-                    <ImageBrush Stretch="Fill" ImageSource="{Binding botImage}"/>
+                    <ImageBrush Stretch="Fill"
+                                ImageSource="{Binding botImage}"
+                                RenderOptions.BitmapScalingMode="Fant"/>
                 </Border.Background>
             </Border>
 
-            <Label Margin="0,0,0,20" Content="{Binding botName}" Foreground="White" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Margin="0,0,0,20" Content="{Binding botName}"    Foreground="White" HorizontalAlignment="Center" FontSize="20"/>
             <Label Margin="0,0,0,20" Content="{Binding botLatency}" Foreground="White" HorizontalAlignment="Center" FontSize="20"/>
             <Label Margin="0,0,0,20" Content="{Binding botServers}" Foreground="White" HorizontalAlignment="Center" FontSize="20"/>
-            <Label Margin="0,0,0,20" Content="{Binding botUptime}" Foreground="White" HorizontalAlignment="Center" FontSize="20"/>
-            <Label Margin="0,0,0,20" Content="{Binding cpuUsage}" Foreground="White" HorizontalAlignment="Center" FontSize="20"/>
-            <Label Margin="0,0,0,20" Content="{Binding ramUsage}" Foreground="White" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Margin="0,0,0,20" Content="{Binding botUptime}"  Foreground="White" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Margin="0,0,0,20" Content="{Binding cpuUsage}"   Foreground="White" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Margin="0,0,0,20" Content="{Binding ramUsage}"   Foreground="White" HorizontalAlignment="Center" FontSize="20"/>
 
         </StackPanel>
     </Grid>

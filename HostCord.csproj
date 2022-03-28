@@ -14,6 +14,7 @@
     <None Remove="Images\home.png" />
     <None Remove="Images\info.png" />
     <None Remove="Images\logs.png" />
+    <None Remove="Images\mail.png" />
     <None Remove="Images\power.png" />
     <None Remove="Images\update.png" />
   </ItemGroup>
@@ -32,6 +33,7 @@
     <Resource Include="Images\info.png" />
     <Resource Include="Images\logo.png" />
     <Resource Include="Images\logs.png" />
+    <Resource Include="Images\mail.png" />
     <Resource Include="Images\power.png" />
     <Resource Include="Images\update.png" />
   </ItemGroup>

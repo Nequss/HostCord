@@ -4,6 +4,15 @@
              xmlns:local="clr-namespace:HostCord"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+
+        <Style TargetType="ToolTip">
+            <Setter Property="Background" Value="#FF393C43"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="VerticalOffset" Value="0"/>
+            <Setter Property="HorizontalOffset" Value="90"/>
+        </Style>
+
     </Application.Resources>
 </Application>

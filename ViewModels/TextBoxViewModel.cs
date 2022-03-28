@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -34,7 +35,11 @@ namespace HostCord.ViewModels
             set
             {
                 _activeChannelId = value;
-                OnPropertyChanged();
+
+                if (value != 0)
+                    text = "";
+
+               OnPropertyChanged();
             }
         }
 
@@ -51,6 +56,12 @@ namespace HostCord.ViewModels
 
         private void TextBoxSend(object obj)
         {
+            if (activeChannelId == 0)
+            {
+                text = "Not connected!";
+                return;
+            }
+
             (bot.client.GetChannel(activeChannelId) as SocketTextChannel).SendMessageAsync((string)obj);
 
             text = "";
