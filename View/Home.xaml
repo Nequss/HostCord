@@ -92,10 +92,36 @@
                 <Border Margin="3"
                         CornerRadius="30"
                         RenderOptions.BitmapScalingMode="Fant">
-                   
+
+
+                    <Canvas Visibility="{Binding dmCanvas}">
+
+                        <Ellipse Width="25"
+                                 Height="25"
+                                 Stroke="#FF393C43"
+                                 StrokeThickness="10"
+                                 Canvas.Left="21"
+                                 Canvas.Top="21"
+                                 RenderOptions.BitmapScalingMode="Fant"/>
+
+                        <Ellipse Width="18"
+                                 Height="18"
+                                 Stroke="Red"
+                                 StrokeThickness="10"
+                                 Canvas.Left="25"
+                                 Canvas.Top="25"
+                                 RenderOptions.BitmapScalingMode="Fant"/>
+
+                        <Label Content="{Binding dmNotificationsText}"
+                               Canvas.Left="{Binding dmCanvasLeft}"
+                               Canvas.Top="21"
+                               Foreground="White"/>
+                    </Canvas>
+                    
                     <Border.Background>
                         <ImageBrush Stretch="Fill" 
-                                    ImageSource="{Binding mailImage}"/>
+                                    ImageSource="{Binding mailImage}"
+                                    RenderOptions.BitmapScalingMode="Fant"/>
                     </Border.Background>
                 </Border>
             </Button>
@@ -136,7 +162,8 @@
                                         RenderOptions.BitmapScalingMode="Fant">
                                     <Border.Background>
                                         <ImageBrush Stretch="Fill" 
-                                                    ImageSource="{Binding url}"/>
+                                                    ImageSource="{Binding url}"
+                                                    RenderOptions.BitmapScalingMode="Fant"/>
                                     </Border.Background>
                                 </Border>
                             </Button>
@@ -149,7 +176,9 @@
         </StackPanel>
 
 
-        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Hidden" Background="#FF2F3136">
+        <ScrollViewer Grid.Column="1" 
+                      VerticalScrollBarVisibility="Hidden" 
+                      Background="#FF2F3136">
             <ItemsControl ItemsSource="{Binding channelsViewModels}">
 
                 <ItemsControl.ItemsPanel>
@@ -236,10 +265,12 @@
                     <DataTemplate>
 
                         <Grid Margin="5">
+                            
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="12*"/>
                                 <ColumnDefinition Width="88*"/>
                             </Grid.ColumnDefinitions>
+                            
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="12*"/>
                                 <RowDefinition Height="88*"/>

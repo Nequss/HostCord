@@ -29,6 +29,8 @@ namespace HostCord.ViewModels
         DispatcherTimer dispatcherTimer;
         PerformanceMonitor performanceMonitor = PerformanceMonitor.getInstance();
 
+        private List<IDMChannel> openDMChannels;
+
         private ObservableCollection<ServersViewModel> _serversViewModels;
         public ObservableCollection<ServersViewModel> serversViewModels
         {
@@ -37,7 +39,6 @@ namespace HostCord.ViewModels
         }
 
         private ObservableCollection<ChannelsViewModel> _channelsViewModels;
-
         public ObservableCollection<ChannelsViewModel> channelsViewModels
         {
             get { return _channelsViewModels; }
@@ -153,18 +154,18 @@ namespace HostCord.ViewModels
             set
             {
                 _activeChannel = value;
-                activeChannelName = $"# {activeChannel.Name} | {activeChannel.Topic}";
+                activeChannelName = $"# {value.Name} | {value.Topic}";
             }
         }
 
-        private SocketDMChannel _activeDM;
-        public SocketDMChannel activeDM
+        private IDMChannel _activeDMChannel;
+        public IDMChannel activeDMChannel
         {
-            get { return _activeDM; }
+            get { return _activeDMChannel; }
             set
             {
-                _activeDM = value;
-                activeChannelName = $"@ {value.Recipient.Username} | {value.Recipient.Status}";
+                _activeDMChannel = value;
+                //activeChannelName = $"@ {value.Recipient.Username} | {value.Recipient.Status}";
             }
         }
 
@@ -176,6 +177,70 @@ namespace HostCord.ViewModels
             set
             {
                 _activeChannelName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _dms;
+        public int dms
+        {
+            get { return _dms; }
+            set
+            {
+                _dms = value;
+
+                if (value == 0)
+                {
+                    dmCanvas = Visibility.Hidden;
+                }
+                else if (value > 99)
+                {
+                    dmNotificationsText = value + "+";
+                }
+                else if (value > 9)
+                {
+                    dmNotificationsText = value + "";
+                    dmCanvasLeft = 22.5f;
+                }
+                else
+                {
+                    dmNotificationsText = value + "";
+                    dmCanvasLeft = 26;
+
+                    dmCanvas = Visibility.Visible;
+                }
+            }
+        }
+
+        private string _dmNotificationsText;
+        public string dmNotificationsText
+        {
+            get { return _dmNotificationsText; }
+            set
+            {
+                _dmNotificationsText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private float _dmCanvasLeft;
+        public float dmCanvasLeft
+        {
+            get { return _dmCanvasLeft; }
+            set
+            {
+                _dmCanvasLeft = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Visibility _dmCanvas;
+        public Visibility dmCanvas
+        {
+            get { return _dmCanvas; }
+            set
+            {
+                _dmCanvas = value;
                 OnPropertyChanged();
             }
         }
@@ -199,9 +264,12 @@ namespace HostCord.ViewModels
             botServers = "Servers: 0";
             botUptime  = "Uptime: 0";
             activeChannelName = "# Default channel name | Channel description";
+            dms = 0;
+            dmCanvas = Visibility.Hidden;
 
-            //GenerateDMsCommand = new RelayCommand(GenerateDMs);
+            GenerateDMsCommand = new RelayCommand(GenerateDMs);
 
+            openDMChannels = new List<IDMChannel>();
 
             serversViewModels = new ObservableCollection<ServersViewModel>()
             { 
@@ -210,7 +278,7 @@ namespace HostCord.ViewModels
 
             channelsViewModels = new ObservableCollection<ChannelsViewModel>()
             {
-                new ChannelsViewModel(0, "", 0, "# Default text channel"),
+                new ChannelsViewModel(0, "", 0, "# Default text channel", false),
 
             };
 
@@ -235,74 +303,52 @@ namespace HostCord.ViewModels
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
             dispatcherTimer.Start();
         }
-
-        /*
         private void GenerateDMs(object obj)
         {
+            dms = 0;
+
             Application.Current.Dispatcher.BeginInvoke(()
                 => channelsViewModels.Clear());
 
-            try
+            if (openDMChannels.Count() > 0)
             {
-                foreach (SocketGuild guild in _bot.client.Guilds)
+                foreach (var openDMChannel in openDMChannels)
                 {
-                    foreach (SocketGuildUser user in guild.Users)
-                    {
-                        var channel = user.CreateDMChannelAsync().Result;
-
-                        var messages = channel.GetMessagesAsync(100).Flatten().Reverse();
-
-                        if(messages.CountAsync().Result > 0)
-                            Application.Current.Dispatcher.BeginInvoke(()
-                                => channelsViewModels.Add(new ChannelsViewModel(0, "", user.Id, user.Username)));
-                    }
+                    Application.Current.Dispatcher.BeginInvoke(()
+                        => channelsViewModels.Add(new ChannelsViewModel(0, "", openDMChannel.Id, openDMChannel.Recipient.Username, true)));
                 }
-            }
-            catch(Exception ex)
-            {
-                Trace.WriteLine($"ex: {ex}");
-            }
 
-            SetMessagesDM(channelsViewModels.First().channelId);
+                SetActiveChannel(openDMChannels.First().Id);
+                SetMessagesDM(openDMChannels.First());
+            }
         }
 
-        private async Task SetMessagesDM(ulong id)
+        private async Task SetMessagesDM(IDMChannel openDMChannel)
         {
             await Application.Current.Dispatcher.BeginInvoke(()
                 => messagesViewModels.Clear());
-
-            var user = await _bot.client.GetUserAsync(id);
-
-            try 
-            {
-                var channel = await user.CreateDMChannelAsync();
+            
+            var messages = openDMChannel.GetMessagesAsync(100).Flatten().Reverse();
     
-                var messages = channel.GetMessagesAsync(100).Flatten().Reverse();
-    
-                await foreach (var message in messages)
-                {
-                    await Application.Current.Dispatcher.BeginInvoke(()
-                        => messagesViewModels.Add(new MessagesViewModel(
-                            message.Author.GetAvatarUrl(ImageFormat.Jpeg, 128),
-                            message.Author.Username,
-                            message.Timestamp.LocalDateTime.ToString(),
-                            message.Content,
-                            GetImageUrl(message))));
-                }
-            }
-            catch (Exception ex)
+            await foreach (var message in messages)
             {
-                Trace.WriteLine($"ex: {ex}");
+                await Application.Current.Dispatcher.BeginInvoke(()
+                    => messagesViewModels.Add(new MessagesViewModel(
+                        message.Author.GetAvatarUrl(ImageFormat.Jpeg, 128),
+                        message.Author.Username,
+                        message.Timestamp.LocalDateTime.ToString(),
+                        message.Content,
+                        GetImageUrl(message))));
             }
         }
-        */
 
         private void GenerateChannels(object obj)
         {
-            SetActiveChannelCommand = new RelayCommand(SetActiveChannel);
 
             Application.Current.Dispatcher.BeginInvoke(()
                 => channelsViewModels.Clear());
+
+            SetActiveChannelCommand = new RelayCommand(SetActiveChannel);
 
             foreach (SocketGuild guild in _bot.client.Guilds)
             {
@@ -310,7 +356,7 @@ namespace HostCord.ViewModels
                 {
                     foreach (SocketTextChannel channel in guild.TextChannels)
                         Application.Current.Dispatcher.BeginInvoke(()
-                            => channelsViewModels.Add(new ChannelsViewModel(guild.Id, guild.Name, channel.Id, "# " + channel.Name)));
+                            => channelsViewModels.Add(new ChannelsViewModel(guild.Id, guild.Name, channel.Id, "# " + channel.Name, false)));
 
                     SetActiveChannel(guild.DefaultChannel.Id);
 
@@ -324,17 +370,30 @@ namespace HostCord.ViewModels
             Application.Current.Dispatcher.BeginInvoke(()
                 => messagesViewModels.Clear());
 
-            activeChannel = (SocketTextChannel)_bot.client.GetChannel((ulong)obj);
+            activeDMChannel = _bot.client.GetDMChannelAsync((ulong)obj).Result;
 
-            if (textBoxViewModels.Any())
-                textBoxViewModels[0].activeChannelId = activeChannel.Id;
+            if (activeDMChannel != null)
+            { 
 
-            SetMessages();
+                if (textBoxViewModels.Any())
+                    textBoxViewModels[0].activeChannelId = activeDMChannel.Id;
+
+                SetMessagesDM(activeDMChannel);
+            }
+            else 
+            { 
+                activeChannel = (SocketTextChannel)_bot.client.GetChannel((ulong)obj);
+
+                if (textBoxViewModels.Any())
+                    textBoxViewModels[0].activeChannelId = activeChannel.Id;
+
+                SetMessages();
+            }
         }
 
         private async Task SetMessages()
         {
-            var messages = activeChannel.GetMessagesAsync(50).Flatten().Reverse();
+            var messages = activeChannel.GetMessagesAsync(40).Flatten().Reverse();
 
             await foreach (var message in messages)
             {
@@ -365,6 +424,11 @@ namespace HostCord.ViewModels
             return "";
         }
 
+        private bool IsDM(SocketMessage msg)
+        {
+            return (msg.Channel.GetType() == typeof(SocketDMChannel));
+        }
+
         private Task Client_Ready()
         {
             Application.Current.Dispatcher.BeginInvoke(() 
@@ -372,12 +436,12 @@ namespace HostCord.ViewModels
 
             GenerateChannelsCommand = new RelayCommand(GenerateChannels);
 
+
             foreach (SocketGuild guild in _bot.client.Guilds)
                 Application.Current.Dispatcher.BeginInvoke(() =>
                 {
                     serversViewModels.Add(new ServersViewModel(guild.Id, guild.IconUrl, guild.Name));
-
-                 });
+                });
 
 
             GenerateChannels(_bot.client.Guilds.First().Name);
@@ -387,20 +451,48 @@ namespace HostCord.ViewModels
 
         private Task Client_MessageReceived(SocketMessage message)
         {
-            if (activeChannel != null)
+            if (IsDM(message))
             {
-                if (message.Channel.Id != activeChannel.Id)
+                dms++;
+
+                if (activeDMChannel != null)
+                {
+                    if (message.Channel.Id != activeChannel.Id)
+                        return Task.CompletedTask;
+
+                    Application.Current.Dispatcher.BeginInvoke(()
+                        => messagesViewModels.Add(new MessagesViewModel(
+                            message.Author.GetAvatarUrl(ImageFormat.Jpeg, 128),
+                            message.Author.Username,
+                            message.Timestamp.LocalDateTime.ToString(),
+                            message.Content,
+                            GetImageUrl(message))));
+
                     return Task.CompletedTask;
-
-                Application.Current.Dispatcher.BeginInvoke(()
-                    => messagesViewModels.Add(new MessagesViewModel(
-                        message.Author.GetAvatarUrl(),
-                        message.Author.Username,
-                        message.Timestamp.LocalDateTime.ToString(),
-                        message.Content,
-                        GetImageUrl(message))));
+                }
+                else
+                {
+                    openDMChannels.Add((IDMChannel)message.Channel);
+                    return Task.CompletedTask;
+                }
             }
+            else
+            {
+                if (activeChannel != null)
+                {
+                    if (message.Channel.Id != activeChannel.Id)
+                        return Task.CompletedTask;
 
+                    Application.Current.Dispatcher.BeginInvoke(()
+                        => messagesViewModels.Add(new MessagesViewModel(
+                            message.Author.GetAvatarUrl(),
+                            message.Author.Username,
+                            message.Timestamp.LocalDateTime.ToString(),
+                            message.Content,
+                            GetImageUrl(message))));
+                }
+
+            }
             return Task.CompletedTask;
         }
 

@@ -62,9 +62,17 @@ namespace HostCord.ViewModels
                 return;
             }
 
-            (bot.client.GetChannel(activeChannelId) as SocketTextChannel).SendMessageAsync((string)obj);
+            if (IsChannelDM(activeChannelId))
+                (bot.client.GetChannel(activeChannelId) as SocketDMChannel).SendMessageAsync((string)obj);
+            else
+                (bot.client.GetChannel(activeChannelId) as SocketTextChannel).SendMessageAsync((string)obj);
 
             text = "";
+        }
+
+        private bool IsChannelDM(ulong id)
+        {
+            return (bot.client.GetChannel(id).GetType() == typeof(SocketDMChannel));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

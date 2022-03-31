@@ -47,13 +47,23 @@ namespace HostCord.ViewModels
                 _channelName = value;
             }
         }
+        private bool _isDM;
+        public bool isDM
+        {
+            get { return _isDM; }
+            set
+            {
+                _isDM = value;
+            }
+        }
 
-        public ChannelsViewModel(ulong guildId, string guildName, ulong channelId, string channelName)
+        public ChannelsViewModel(ulong guildId, string guildName, ulong channelId, string channelName, bool isDM)
         {
             this.guildId = guildId;
             this.guildName = guildName;
             this.channelId = channelId;
             this.channelName = channelName;
+            this.isDM = isDM;
         }
     }
 }
