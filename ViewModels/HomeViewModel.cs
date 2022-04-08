@@ -165,7 +165,6 @@ namespace HostCord.ViewModels
             set
             {
                 _activeDMChannel = value;
-                //activeChannelName = $"@ {value.Recipient.Username} | {value.Recipient.Status}";
             }
         }
 
@@ -281,7 +280,7 @@ namespace HostCord.ViewModels
                 new ChannelsViewModel(0, "", 0, "# Default text channel", false),
 
             };
-
+            
             messagesViewModels = new ObservableCollection<MessagesViewModel>()
             {
                 new MessagesViewModel(botImage, "HostCord", DateTime.Now.ToString(@"hh\:mm"), "Welcome to the HostCord!", ""),
@@ -303,6 +302,7 @@ namespace HostCord.ViewModels
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
             dispatcherTimer.Start();
         }
+
         private void GenerateDMs(object obj)
         {
             dms = 0;
@@ -320,6 +320,8 @@ namespace HostCord.ViewModels
 
                 SetActiveChannel(openDMChannels.First().Id);
                 SetMessagesDM(openDMChannels.First());
+
+                activeDMChannel = openDMChannels.First();
             }
         }
 
@@ -328,7 +330,7 @@ namespace HostCord.ViewModels
             await Application.Current.Dispatcher.BeginInvoke(()
                 => messagesViewModels.Clear());
             
-            var messages = openDMChannel.GetMessagesAsync(100).Flatten().Reverse();
+            var messages = openDMChannel.GetMessagesAsync(25).Flatten().Reverse();
     
             await foreach (var message in messages)
             {
@@ -344,6 +346,7 @@ namespace HostCord.ViewModels
 
         private void GenerateChannels(object obj)
         {
+            activeDMChannel = null;
 
             Application.Current.Dispatcher.BeginInvoke(()
                 => channelsViewModels.Clear());
@@ -373,19 +376,25 @@ namespace HostCord.ViewModels
             activeDMChannel = _bot.client.GetDMChannelAsync((ulong)obj).Result;
 
             if (activeDMChannel != null)
-            { 
+            {
 
                 if (textBoxViewModels.Any())
+                {
+                    textBoxViewModels[0].isDM = true;
                     textBoxViewModels[0].activeChannelId = activeDMChannel.Id;
+                }
 
                 SetMessagesDM(activeDMChannel);
             }
-            else 
-            { 
+            else
+            {
                 activeChannel = (SocketTextChannel)_bot.client.GetChannel((ulong)obj);
 
                 if (textBoxViewModels.Any())
+                {
+                    textBoxViewModels[0].isDM = false;
                     textBoxViewModels[0].activeChannelId = activeChannel.Id;
+                }
 
                 SetMessages();
             }
@@ -397,7 +406,6 @@ namespace HostCord.ViewModels
 
             await foreach (var message in messages)
             {
-
                 await Application.Current.Dispatcher.BeginInvoke(()
                     => messagesViewModels.Add(new MessagesViewModel(
                         message.Author.GetAvatarUrl(ImageFormat.Jpeg, 128),
@@ -453,11 +461,9 @@ namespace HostCord.ViewModels
         {
             if (IsDM(message))
             {
-                dms++;
-
                 if (activeDMChannel != null)
                 {
-                    if (message.Channel.Id != activeChannel.Id)
+                    if (message.Channel.Id != activeDMChannel.Id)
                         return Task.CompletedTask;
 
                     Application.Current.Dispatcher.BeginInvoke(()
@@ -472,13 +478,15 @@ namespace HostCord.ViewModels
                 }
                 else
                 {
+                    dms++;
+
                     openDMChannels.Add((IDMChannel)message.Channel);
                     return Task.CompletedTask;
                 }
             }
             else
             {
-                if (activeChannel != null)
+                if (activeDMChannel == null & activeChannel != null)
                 {
                     if (message.Channel.Id != activeChannel.Id)
                         return Task.CompletedTask;

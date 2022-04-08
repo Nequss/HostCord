@@ -10,12 +10,23 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Discord.WebSocket;
 using HostCord.Commands;
+using System.Windows.Controls;
+using HostCord.View;
+using System.Windows;
+using System.Windows.Threading;
+using System.Dynamic;
+using System.Threading;
+using Discord;
+using HostCord.Utils;
+using HostCord.Models;
+
 
 namespace HostCord.ViewModels
 {
     public class TextBoxViewModel : INotifyPropertyChanged
     {
         Bot bot;
+        public bool isDM = false;
 
         private string _text;
         public string text
@@ -62,17 +73,12 @@ namespace HostCord.ViewModels
                 return;
             }
 
-            if (IsChannelDM(activeChannelId))
-                (bot.client.GetChannel(activeChannelId) as SocketDMChannel).SendMessageAsync((string)obj);
+            if (isDM)
+                bot.client.GetDMChannelAsync(activeChannelId).Result.SendMessageAsync((string)obj);
             else
                 (bot.client.GetChannel(activeChannelId) as SocketTextChannel).SendMessageAsync((string)obj);
 
             text = "";
-        }
-
-        private bool IsChannelDM(ulong id)
-        {
-            return (bot.client.GetChannel(id).GetType() == typeof(SocketDMChannel));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

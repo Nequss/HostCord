@@ -253,7 +253,9 @@
                       Margin="0,30,0,30"
                       Grid.Column="2" 
                       VerticalScrollBarVisibility="Hidden">
-            <ItemsControl ItemsSource="{Binding messagesViewModels}">
+            <ItemsControl ItemsSource="{Binding messagesViewModels}"
+                          VirtualizingStackPanel.IsVirtualizing="True"
+                          VirtualizingStackPanel.VirtualizationMode="Recycling">
 
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -283,10 +285,12 @@
                                     CornerRadius="30" 
                                     VerticalAlignment="Top"
                                     RenderOptions.BitmapScalingMode="Fant">
+                                
                                 <Border.Background>
                                     <ImageBrush Stretch="Fill"
                                                 ImageSource="{Binding userUrl}"
-                                                RenderOptions.BitmapScalingMode="Fant"/>
+                                                RenderOptions.BitmapScalingMode="Fant">
+                                    </ImageBrush>
                                 </Border.Background>
                             </Border>
 
@@ -317,12 +321,13 @@
                                      Foreground="White"
                                      Background="Transparent"
                                      FontSize="15"/>
-                                
+
                                 <Image Source="{Binding messageImageUrl}"
                                        MaxHeight="310"
                                        MaxWidth="310"
                                        HorizontalAlignment="Left"
-                                       RenderOptions.BitmapScalingMode="Fant"/>
+                                       RenderOptions.BitmapScalingMode="Fant">
+                                </Image>
 
                             </StackPanel>
                         </Grid>
