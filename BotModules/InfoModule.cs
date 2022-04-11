@@ -114,10 +114,6 @@ namespace KipoBot.Modules
                 if (role.Name != "@everyone")
                     roles += role.Mention + " | ";
 
-            string permissions = "| ";
-            foreach (GuildPermission guildPermission in user.GuildPermissions.ToList())
-                permissions += guildPermission.ToString() + " | ";
-
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.Color = Color.Purple;
 
@@ -129,10 +125,8 @@ namespace KipoBot.Modules
 
             embedBuilder.AddField("Joined", user.JoinedAt.Value.UtcDateTime, true);
             embedBuilder.AddField("Registered", user.CreatedAt.UtcDateTime, true);
-
             embedBuilder.AddField("Status", user.Status, false);
             embedBuilder.AddField("Roles", roles, false);
-            embedBuilder.AddField("Permissions", permissions, false);
             embedBuilder.AddField("Avatar", user.GetAvatarUrl(), false);
 
             await Context.Channel.SendMessageAsync(embed: embedBuilder.Build());
@@ -175,7 +169,6 @@ namespace KipoBot.Modules
             SocketGuildUser user = Helpers.extractUser(Context, command);
             await Context.Channel.SendMessageAsync(user.GetAvatarUrl(size: 1024));
         }
-
 
         /*
         [Command("reloadbanners", RunMode = RunMode.Async)]
